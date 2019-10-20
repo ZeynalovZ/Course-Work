@@ -4,7 +4,7 @@
 #include "point3d.h"
 #define POINT_SIZE 1
 // Для перспективной проекции
-#define K 10
+#define K 2
 class BaseDrawer:public QGraphicsScene
 {
 public:
@@ -14,7 +14,7 @@ public:
     // here another algorithm by VU
     void drawLine(qreal xFirst, qreal yFirst, qreal xLast, qreal yLast);
 
-    void drawCircle(Point3D _center, qreal radius);
+    void CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius);
 
     void drawEllipse();
 

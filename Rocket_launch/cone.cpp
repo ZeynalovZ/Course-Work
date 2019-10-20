@@ -12,10 +12,10 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
 }
 // сделать вращение для каждой точки !!! по каждой координате и в цикле построения окружности выводить какждую точку через поворот
 // в объекте cone хранить угол по каждой координате, значение которых равно сумме всех углов поворотов.
-void Cone::Rotatex(int angle_x)
+void Cone::Rotatex(int angle_x, Point3D &point)
 {
-    qreal center_y = this->ConeCenter.y();
-    qreal center_z = this->ConeCenter.z();
+    qreal center_y = point.y();
+    qreal center_z = point.z();
     if (angle_x != 0)
     {
         double cosa = cos(angle_x * M_PI / TO_RAD_180);
@@ -23,15 +23,15 @@ void Cone::Rotatex(int angle_x)
         double y = center_y * cosa - center_z * sina;
         double z = center_y * sina + center_z * cosa;
 
-        this->ConeCenter.setY(y);
-        this->ConeCenter.setZ(z);
+        point.setY(y);
+        point.setZ(z);
     }
 }
 
-void Cone::Rotatey(int angle_y)
+void Cone::Rotatey(int angle_y, qreal _y, qreal _z)
 {
-    qreal center_y = this->ConeCenter.y();
-    qreal center_z = this->ConeCenter.z();
+    qreal center_y = _y;
+    qreal center_z = _z;
     if (angle_y != 0)
     {
         double cosa = cos(angle_y * M_PI / TO_RAD_180);
@@ -44,10 +44,10 @@ void Cone::Rotatey(int angle_y)
     }
 }
 
-void Cone::Rotatez(int angle_z)
+void Cone::Rotatez(int angle_z, qreal _y, qreal _x)
 {
-    qreal center_y = this->ConeCenter.y();
-    qreal center_x = this->ConeCenter.x();
+    qreal center_y = _y;
+    qreal center_x = _x;
     if (angle_z != 0)
     {
         double cosa = cos(angle_z * M_PI / TO_RAD_180);
