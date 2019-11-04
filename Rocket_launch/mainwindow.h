@@ -7,6 +7,7 @@
 #include "point3d.h"
 #include "cone.h"
 #include "drawer.h"
+#include "rocket.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,15 +21,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
-    void on_pushButton_clicked();
+    void render();
 
-    void on_pushButton_2_clicked();
+private slots:
+    void on_Draw_clicked();
+
+    void on_rotate_clicked();
 
 private:
     Ui::MainWindow *ui;
     Drawer *scene;
-    Cone cone;
+    rocket _rocket;
+    Point3D cameraPosition;
 };
 
 #endif // MAINWINDOW_H

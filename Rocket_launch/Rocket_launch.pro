@@ -32,7 +32,12 @@ SOURCES += \
     point3d.cpp \
     baseobject.cpp \
     cone.cpp \
-    scene/scene.cpp
+    scene/scene.cpp \
+    rocket.cpp \
+    edges.cpp \
+    camera.cpp \
+    matrix.cpp \
+    transfor_matrix.cpp
 HEADERS += \
         mainwindow.h \
     basedrawer.h \
@@ -41,7 +46,12 @@ HEADERS += \
     point3d.h \
     baseobject.h \
     cone.h \
-    scene/scene.h
+    scene/scene.h \
+    rocket.h \
+    edges.h \
+    camera.h \
+    matrix.h \
+    transfor_matrix.h
 
 FORMS += \
         mainwindow.ui

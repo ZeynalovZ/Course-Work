@@ -2,8 +2,11 @@
 #include "ui_mainwindow.h"
 #include "basedrawer.h"
 #include "QDebug"
+#include <stdio.h>
+#define SCALE 5
+using namespace std;
 
-#define SCALE 2
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -13,6 +16,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // Создание и начальная инициализация объектов
     scene = new Drawer();
     ui->PaintingScene->setScene(scene);
+
+
+
+    // Создадим ракету
+    _rocket.createRocket(SCALE);
+    cameraPosition.setX(0);
+    cameraPosition.setY(0);
+    cameraPosition.setZ(600);
+
 }
 
 MainWindow::~MainWindow()
@@ -20,70 +32,46 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    Point3D center(100, 200, 1010);
-    qreal radius1 = 2;
-    qreal radius2 = 30;
-    qreal height = 30;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-
-    center.setX(100);
-    center.setY(200);
-    center.setZ(880);
-    radius1 = 30;
-    radius2 = 30;
-    height = 100;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-
-    center.setX(100);
-    center.setY(200);
-    center.setZ(760);
-    radius1 = 30;
-    radius2 = 40;
-    height = 20;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-
-    center.setX(100);
-    center.setY(200);
-    center.setZ(590);
-    radius1 = 40;
-    radius2 = 40;
-    height = 150;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-
-    center.setX(100);
-    center.setY(200);
-    center.setZ(420);
-    radius1 = 40;
-    radius2 = 30;
-    height = 20;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-
-    center.setX(100);
-    center.setY(200);
-    center.setZ(370);
-    radius1 = 30;
-    radius2 = 40;
-    height = 30;
-
-    cone.createCone(center, radius1, radius2, height, SCALE);
-    scene->drawCone(cone);
-}
-
-
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::render()
 {
     scene->clear();
-    scene->drawCone(cone);
+    scene->drawRocket(_rocket, cameraPosition);
+
 }
+
+unsigned long long tick(void)
+{
+    unsigned long long d;
+    __asm__ __volatile__ ("rdtsc" : "=A" (d) );
+
+    return d;
+}
+
+void MainWindow::on_Draw_clicked()
+{
+    render();
+}
+
+void MainWindow::on_rotate_clicked()
+{
+
+    bool ok1 = true, ok2;
+
+    QString x = ui->editX->text();
+    int angleX = x.toDouble(&ok1);
+    QString y = ui->editY->text();
+    int angleY = y.toDouble(&ok2);
+
+    qDebug() << angleY;
+    _rocket.rotateX(angleX);
+    _rocket.rotateY(angleY);
+
+    render();
+}
+/*
+// добавить камеру,
+матрицы поворотов и вращений и переносов,
+добавить сцену и добавлять объекты в сцену,
+рисовать на QImage и потом переносить на QGraphicsView
+
+*/

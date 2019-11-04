@@ -2,9 +2,10 @@
 #define BASEDRAWER_H
 #include "QGraphicsScene"
 #include "point3d.h"
+#include "camera.h"
 #define POINT_SIZE 1
 // Для перспективной проекции
-#define K 2
+#define K 1000
 class BaseDrawer:public QGraphicsScene
 {
 public:
@@ -14,7 +15,6 @@ public:
     // here another algorithm by VU
     void drawLine(qreal xFirst, qreal yFirst, qreal xLast, qreal yLast);
 
-    void CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius);
 
     void drawEllipse();
 
