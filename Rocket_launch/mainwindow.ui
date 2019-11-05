@@ -119,6 +119,16 @@
      <string>Z</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="AngleInfo">
+    <property name="geometry">
+     <rect>
+      <x>980</x>
+      <y>450</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

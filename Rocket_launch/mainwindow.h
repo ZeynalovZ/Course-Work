@@ -22,17 +22,25 @@ public:
     ~MainWindow();
 
     void render();
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void on_Draw_clicked();
 
     void on_rotate_clicked();
 
+
+public:
+    int CameraAngleX = 0;
+    int CameraAngleY = 0;
+    int CameraAngleZ = 0;
+
 private:
     Ui::MainWindow *ui;
     Drawer *scene;
     rocket _rocket;
     Point3D cameraPosition;
+
 };
 
 #endif // MAINWINDOW_H

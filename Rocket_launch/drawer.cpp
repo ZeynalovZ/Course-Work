@@ -24,6 +24,9 @@ void Drawer::drawCone(Cone &_cone)
     //qDebug() << angleY << " y";
     //qDebug() << _cone.firstCircle[2].x() << "here";
 
+    //this->drawLine(0, 40, 800, 40);
+
+
     for (int i = 0; i < _cone.firstCircle.size(); i++)
     {
         Point3D tmp = _cone.firstCircle[i];
@@ -79,10 +82,22 @@ void Drawer::drawCone(Cone &_cone)
 void Drawer::drawRocket(rocket &_rocket, Point3D CameraPosition)
 {
     _camera.setPosition(CameraPosition);
+
+
     for (int i = 0; i < _rocket.modules.size(); i++)
     {
+        _rocket.modules[i].currentAngleX = _rocket.angleX;
+        _rocket.modules[i].currentAngleY = _rocket.angleY;
+        _rocket.modules[i].currentAngleZ = _rocket.angleZ;
         drawCone(_rocket.modules[i]);
     }
+}
+
+void Drawer::drawLine3D(Point3D first, Point3D second)
+{
+    PerspectiveProjection(first);
+    PerspectiveProjection(second);
+    this->drawLine(first.x(), first.y(), second.x(), second.y());
 }
 
 void Drawer::PerspectiveProjection(Point3D &point)
@@ -90,14 +105,14 @@ void Drawer::PerspectiveProjection(Point3D &point)
     auto cam_pos = _camera.getPosition();
     std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(-cam_pos.x(), -cam_pos.y(), 0));
     point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle()));
+    transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle() * M_PI / TO_RAD_180));
     point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle()));
+    transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle() * M_PI / TO_RAD_180));
     point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle()));
+    transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
     point.transform(transform_matrix);
 
-    double eps = 1e-10;
+    double eps = 1e-5;
     double znam = point.z() + cam_pos.z();
     if (znam < eps && znam > -eps) {
         znam = eps;
@@ -106,6 +121,13 @@ void Drawer::PerspectiveProjection(Point3D &point)
     point.setX(point.x() * distCoef);
     point.setY(point.y() * distCoef);
 
+}
+
+void Drawer::SetCameraAngleS(int angleX, int angleY, int angleZ)
+{
+    _camera.setXAngle(angleX);
+    _camera.setYAngle(angleY);
+    _camera.setZAngle(angleZ);
 }
 
 

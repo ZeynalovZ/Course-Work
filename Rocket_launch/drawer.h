@@ -13,7 +13,10 @@ public:
 
     void drawCone(Cone &_cone);
     void drawRocket(rocket &_rocket, Point3D CameraPosition);
+    void drawLine3D(Point3D first, Point3D second);
     void PerspectiveProjection(Point3D &point);
+    void SetCameraAngleS(int angleX, int angleY, int angleZ);
+    void MoveRocket();
     Camera _camera;
     //double PerspectiveProjectionX(double x);
     //double PerspectiveProjectionY(double y);

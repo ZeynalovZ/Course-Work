@@ -3,7 +3,7 @@
 #include "QPoint"
 #include "matrix.h"
 #include <memory>
-
+#define TO_RAD_180 180
 class Point3D : public QPoint
 {
 public:

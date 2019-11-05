@@ -28,6 +28,8 @@ public:
 
     void rotateZ();
 
+    void moveRocket();
+
     bool is_visible();
 
 public:

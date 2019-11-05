@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <iostream>
 using namespace std;
-#define TO_RAD_180 180
+
 
 
 void printMatrix(double matrix[][4], int row_count, int column_count)

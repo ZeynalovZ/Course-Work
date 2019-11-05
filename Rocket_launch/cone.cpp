@@ -50,8 +50,10 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     this->CreateCircle(this->firstCircle, FirstCenter, radius1);
     this->CreateCircle(this->secondCircle, SecondCenter, radius2);
 
+    Point3D tmp1;
+    Point3D tmp2;
     // Создание ребер
-    if (radius1 <= radius2)
+    if (radius1 <= radius2 && this->firstCircle.size() != 1)
     {
         int k = this->secondCircle.size() / this->firstCircle.size();
         for (int i = 0; i <= this->firstCircle.size(); i += 92)
@@ -59,8 +61,8 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
 
             // Это, если что - полигоны
 
-            Point3D tmp1(firstCircle[i].x(), firstCircle[i].y(), firstCircle[i].z());
-            Point3D tmp2(secondCircle[i * k].x(), secondCircle[i * k].y(), secondCircle[i].z());
+            tmp1.changeAll(firstCircle[i].x(), firstCircle[i].y(), firstCircle[i].z());
+            tmp2.changeAll(secondCircle[i * k].x(), secondCircle[i * k].y(), secondCircle[i].z());
             Edges.addEdge(tmp1, tmp2);
 
             tmp1.changeAll(firstCircle[i + 1].x(), firstCircle[i + 1].y(), firstCircle[i + 1].z());
@@ -82,8 +84,8 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
         int k = this->firstCircle.size() / this->secondCircle.size();
         for (int i = 0; i <= this->secondCircle.size(); i += 92)
         {
-            Point3D tmp1(secondCircle[i].x(), secondCircle[i].y(), secondCircle[i].z());
-            Point3D tmp2(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i].z());
+            tmp1.changeAll(secondCircle[i].x(), secondCircle[i].y(), secondCircle[i].z());
+            tmp2.changeAll(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i].z());
             Edges.addEdge(tmp1, tmp2);
 
             tmp1.changeAll(secondCircle[i + 1].x(), secondCircle[i + 1].y(), secondCircle[i].z());
