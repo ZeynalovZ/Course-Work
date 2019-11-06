@@ -6,7 +6,7 @@
 #define POINT_SIZE 1
 // Для перспективной проекции
 #define K 1000
-class BaseDrawer:public QGraphicsScene
+class BaseDrawer
 {
 public:
     BaseDrawer();

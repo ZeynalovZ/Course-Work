@@ -1,10 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "basedrawer.h"
+#include "drawer.h"
+#include "paintingwidget.h"
 #include "QDebug"
 #include <stdio.h>
 #include <QKeyEvent>
-#define SCALE 5
+#define SCALE 1
 
 #define X_SIZE 951
 #define Y_SIZE 561
@@ -18,12 +19,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Создание и начальная инициализация объектов
-    scene = new Drawer();
-    ui->PaintingScene->setScene(scene);
+    //scene = new Drawer(this);
 
+//    drawer = new Drawer();
+//    scene = new QPixmap(X_SIZE, Y_SIZE);
+//    scene->fill(QColor(Qt::white));
+//    painter = new QPainter(this);
+//    painter->setPen(QColor(Qt::black));
 
-    // Создадим ракету
-    _rocket.createRocket(SCALE);
+//    ui->PaintingScene->setPixmap(*scene);
+    scene = new PaintWidget(this);
+
+    //    QPixmap scene1(951, 561);
+    //    scene1.fill(QColor(Qt::white));
+    //    QPainter painter(&scene1);
+    //    painter.setPen(Qt::red);
+    //    painter.drawLine(100, 100, 300, 300);
+    //    scene->addPixmap(scene1);
+
+    //ui->PaintingScene->setScene(scene);
+    //ui->PaintingScene->render(painter);
+    //ui->PaintingScene->setBackgroundBrush(img);
+    //ui->PaintingScene->setCacheMode(QGraphicsView::CacheBackground);
+    // Создадим ракету передав в нее центр основания ракеты и ее масштаб
+    Point3D rocketCenter(0, 0, 0);
+    _rocket.createRocket(rocketCenter, SCALE);
     cameraPosition.setX(0);
     cameraPosition.setY(0);
     cameraPosition.setZ(-100000);
@@ -78,10 +98,29 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         CameraAngleZ -= 5;
         //cameraPosition.setY(cameraPosition.y() - 5);
     }
+    else if (event->key() == Qt::Key_Q)
+    {
+        cameraPosition.setX(cameraPosition.x() + 5);
+        //cameraPosition.setY(cameraPosition.y() + 5);
+        //cameraPosition.setZ(cameraPosition.z() + 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+    }
+    else if (event->key() == Qt::Key_C)
+    {
+        cameraPosition.setX(cameraPosition.x() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+        //cameraPosition.setZ(cameraPosition.z() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+    }
     QString str0 = QString::number(CameraAngleX);
     QString str1 = QString::number(CameraAngleY);
     QString str2 = QString::number(CameraAngleZ);
-    ui->AngleInfo->setText("Angle X: " + str0 + "\n" + "Angle Y: " + str1 + "\n" + "Angle Z: " + str2 + "\n");
+    QString str3 = QString::number(cameraPosition.x());
+    QString str4 = QString::number(cameraPosition.y());
+    QString str5 = QString::number(cameraPosition.z());
+
+    ui->AngleInfo->setText("Angle X: " + str0 + "\n" + "Angle Y: " + str1 + "\n" + "Angle Z: " + str2 + "\n" +
+                           "camera Position is " + str3 + "," + str4 + "," + str5);
     scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
     render();
 
@@ -121,7 +160,6 @@ unsigned long long tick(void)
 
 void MainWindow::on_Draw_clicked()
 {
-
     render();
 }
 
@@ -139,6 +177,11 @@ void MainWindow::on_rotate_clicked()
 
     render();
 }
+
+void MainWindow::MoveRocket()
+{
+
+}
 /*
 // добавить камеру,
 матрицы поворотов и вращений и переносов,
@@ -146,3 +189,15 @@ void MainWindow::on_rotate_clicked()
 рисовать на QImage и потом переносить на QGraphicsView
 
 */
+
+void MainWindow::on_pushButton_clicked()
+{
+    QTimer t;
+    for (int i = 0; i < 1000; i++)
+    {
+        _rocket.moveRocket();
+        render();
+        t.start(1000000);
+        repaint();
+    }
+}

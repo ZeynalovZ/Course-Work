@@ -42,21 +42,21 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     FirstCenter.setZ(ConeCenter.z() + distance);
     SecondCenter.setZ(ConeCenter.z() - distance);
 
-    qDebug() << ConeCenter.z() + distance;
-    qDebug() << ConeCenter.z() - distance;
 
-    //_cone.firstCircle.clear();
-    //_cone.secondCircle.clear();
+    //this->firstCircle.clear();
+    //this->secondCircle.clear();
     this->CreateCircle(this->firstCircle, FirstCenter, radius1);
     this->CreateCircle(this->secondCircle, SecondCenter, radius2);
+
 
     Point3D tmp1;
     Point3D tmp2;
     // Создание ребер
-    if (radius1 <= radius2 && this->firstCircle.size() != 1)
+
+    if (radius1 <= radius2 && this->firstCircle.size() != 4)
     {
         int k = this->secondCircle.size() / this->firstCircle.size();
-        for (int i = 0; i <= this->firstCircle.size(); i += 92)
+        for (int i = 0; i < this->firstCircle.size(); i += 92)
         {
 
             // Это, если что - полигоны
@@ -82,10 +82,11 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     else
     {
         int k = this->firstCircle.size() / this->secondCircle.size();
-        for (int i = 0; i <= this->secondCircle.size(); i += 92)
+        //qDebug() << k << " is k";
+        for (int i = 0; i < this->secondCircle.size(); i += 92)
         {
             tmp1.changeAll(secondCircle[i].x(), secondCircle[i].y(), secondCircle[i].z());
-            tmp2.changeAll(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i].z());
+            tmp2.changeAll(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i * k].z());
             Edges.addEdge(tmp1, tmp2);
 
             tmp1.changeAll(secondCircle[i + 1].x(), secondCircle[i + 1].y(), secondCircle[i].z());
@@ -148,4 +149,25 @@ void Cone::Rotatey(int angle_y, qreal _y, qreal _z)
 void Cone::Rotatez(int angle_z, qreal _y, qreal _x)
 {
     ;
+}
+
+void Cone::MoveCone()
+{
+    for (int i = 0; i < this->firstCircle.size(); i++)
+    {
+        this->firstCircle[i].move(0, 0, 1);
+    }
+
+    for (int i = 0; i < this->secondCircle.size(); i++)
+    {
+        this->secondCircle[i].move(0, 0, 1);
+
+    }
+    for (int i = 0; i < this->Edges.list.size(); i++)
+    {
+
+        this->Edges.list[i].first.move(0, 0, 1);
+        this->Edges.list[i].second.move(0, 0, 1);
+
+    }
 }

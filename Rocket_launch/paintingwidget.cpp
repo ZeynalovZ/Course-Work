@@ -1,20 +1,20 @@
-#include "drawer.h"
-#include "QDebug"
-#include <memory>
-#define ANGLE_X 65
-Drawer::Drawer(QWidget *parent) : QWidget(parent)
+#include "paintingwidget.h"
+#define X_SIZE  850 / 2
+#define Y_SIZE  715 / 2
+PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
 {
-    int widget_width = 951;
-    int widget_height = 561;
+    widget_width = 850;
+    widget_height = 715;
+    bg_color = Qt::white;
+    borders_color = Qt::black;
+    fill_color = Qt::blue;
     image = new QImage(widget_width, widget_height, QImage::Format_RGB32);
-    image->fill(Qt::white);
-    setPalette(QPalette(QColor(Qt::white)));
-    setGeometry(10, 10, widget_width, widget_height);
-    update();
+    image->fill(bg_color);
+    setGeometry(20, 20, widget_width, widget_height);
+    painter = new QPainter(image);
 }
 
-
-void Drawer::drawCone(Cone &_cone, QPainter &painter)
+void PaintWidget::drawCone(Cone &_cone)
 {
     // Рисовать здесь точно не нужно !
     // Для этого есть модель внутри конуса, туда нужно еще записать индексы точек связей для отображения
@@ -40,7 +40,8 @@ void Drawer::drawCone(Cone &_cone, QPainter &painter)
         tmp.rotateY(angleY);
         //tmp  = PerspectiveProjection(tmp);
         PerspectiveProjection(tmp);
-        painter.drawPoint(tmp.x(), tmp.y());
+        // Перенос в центр экрана
+        painter->drawPoint(tmp.x() + X_SIZE, tmp.y()+ Y_SIZE);
         //_cone.firstCircle[i].rotateX(ANGLE_X);
         //this->drawPoint(_cone.firstCircle[i].x(), _cone.firstCircle[i].y());
     }
@@ -52,7 +53,7 @@ void Drawer::drawCone(Cone &_cone, QPainter &painter)
         tmp.rotateY(angleY);
         PerspectiveProjection(tmp);
         //tmp = PerspectiveProjection(tmp);
-        painter.drawPoint(tmp.x(), tmp.y());
+        painter->drawPoint(tmp.x() + X_SIZE, tmp.y() + Y_SIZE);
         //_cone.secondCircle[i].rotateX(ANGLE_X);
         //this->drawPoint(_cone.secondCircle[i].x(), _cone.secondCircle[i].y());
     }
@@ -74,17 +75,15 @@ void Drawer::drawCone(Cone &_cone, QPainter &painter)
 
         //tmp1 = PerspectiveProjection(tmp1);
         //tmp2 = PerspectiveProjection(tmp2);
-        painter.drawLine(tmp1.x(), tmp1.y(),
-                         tmp2.x(), tmp2.y());
+        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
+                         tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
         //this->drawLine(_cone.Edges.list[i].first.x(), _cone.Edges.list[i].first.y(),
           //             _cone.Edges.list[i].second.x(), _cone.Edges.list[i].second.y());
     }
-
-
-
+    update();
 }
 
-void Drawer::drawRocket(rocket &_rocket, Point3D CameraPosition, QPainter &painter)
+void PaintWidget::drawRocket(rocket &_rocket, Point3D CameraPosition)
 {
     _camera.setPosition(CameraPosition);
 
@@ -94,18 +93,20 @@ void Drawer::drawRocket(rocket &_rocket, Point3D CameraPosition, QPainter &paint
         _rocket.modules[i].currentAngleX = _rocket.angleX;
         _rocket.modules[i].currentAngleY = _rocket.angleY;
         _rocket.modules[i].currentAngleZ = _rocket.angleZ;
-        drawCone(_rocket.modules[i], painter);
+        drawCone(_rocket.modules[i]);
     }
+
 }
 
-void Drawer::drawLine3D(Point3D first, Point3D second, QPainter &painter)
+void PaintWidget::drawLine3D(Point3D first, Point3D second)
 {
     PerspectiveProjection(first);
     PerspectiveProjection(second);
-    painter.drawLine(first.x(), first.y(), second.x(), second.y());
+    painter->drawLine(first.x() + X_SIZE, first.y() + Y_SIZE, second.x() + X_SIZE, second.y() + Y_SIZE);
+    update();
 }
 
-void Drawer::PerspectiveProjection(Point3D &point)
+void PaintWidget::PerspectiveProjection(Point3D &point)
 {
     auto cam_pos = _camera.getPosition();
     std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(-cam_pos.x(), -cam_pos.y(), 0));
@@ -125,24 +126,42 @@ void Drawer::PerspectiveProjection(Point3D &point)
     double distCoef = cam_pos.z() / znam;
     point.setX(point.x() * distCoef);
     point.setY(point.y() * distCoef);
-
+    update();
 }
 
-void Drawer::SetCameraAngleS(int angleX, int angleY, int angleZ)
+void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
 {
     _camera.setXAngle(angleX);
     _camera.setYAngle(angleY);
     _camera.setZAngle(angleZ);
+
 }
 
-void Drawer::paintEvent(QPaintEvent *event)
+
+
+void PaintWidget::clear()
 {
-    QPainter painter;
+    image->fill(bg_color);
+}
+
+
+void PaintWidget::mousePressEvent(QMouseEvent *event)
+{
+    QPainter painter(image);
+    painter.setPen(borders_color);
+
+    update();
+}
+
+void PaintWidget::mouseMoveEvent(QMouseEvent *event)
+{
+
+    update();
+}
+
+void PaintWidget::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.drawImage(0, 0, *image);
     Q_UNUSED(event);
 }
-
-//void Drawer::init(int WIDTH, int HEIGHT)
-//{
-
-//}
-

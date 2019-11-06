@@ -18,7 +18,7 @@ public:
 
     void drawRocket();
 
-    void createRocket(qreal _scale);
+    void createRocket(Point3D RocketCenter, qreal Scale);
 
     void deleteRocket();
 
@@ -38,7 +38,7 @@ public:
     int angleX = 0;
     int angleY = 0;
     int angleZ = 0;
-    qreal _scale;
+    qreal scale;
 };
 
 #endif // ROCKET_H

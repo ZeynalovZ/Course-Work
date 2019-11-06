@@ -37,7 +37,8 @@ SOURCES += \
     edges.cpp \
     camera.cpp \
     matrix.cpp \
-    transfor_matrix.cpp
+    transfor_matrix.cpp \
+    paintingwidget.cpp
 HEADERS += \
         mainwindow.h \
     basedrawer.h \
@@ -51,7 +52,8 @@ HEADERS += \
     edges.h \
     camera.h \
     matrix.h \
-    transfor_matrix.h
+    transfor_matrix.h \
+    paintingwidget.h
 
 FORMS += \
         mainwindow.ui

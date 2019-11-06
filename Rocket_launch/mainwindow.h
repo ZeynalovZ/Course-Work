@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "QPainter"
+#include <QPainter>
+#include <QPixmap>
 #include "basedrawer.h"
 #include "point3d.h"
 #include "cone.h"
 #include "drawer.h"
 #include "rocket.h"
+#include "paintingwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +31,8 @@ private slots:
 
     void on_rotate_clicked();
 
+    void MoveRocket();
+    void on_pushButton_clicked();
 
 public:
     int CameraAngleX = 0;
@@ -37,9 +41,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Drawer *scene;
     rocket _rocket;
     Point3D cameraPosition;
+    QPainter *painter;
+    PaintWidget *scene;
+    //Drawer *drawer;
 
 };
 

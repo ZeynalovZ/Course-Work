@@ -102,6 +102,27 @@ void Point3D::rotateY(int angle_y)
     this->setZ(tmp.z());
 }
 
+void Point3D::move(int x, int y, int z)
+{
+    if (x == 0 && y == 0 && z == 0)
+    {
+        return;
+    }
+    double matrix[4][4] = {1,   0,   0,    0,
+                           0,   1,   0,    0,
+                           0,   0,   1,    0,
+                           x,   y,   z,    1};
+
+    //qDebug() << cos(angle_x * M_PI / TO_RAD_180);
+    double matrixsrc[1][4] = {this->x(), this->y(), this->z(), 1};
+    Point3D tmp;
+    //printMatrix(matrixsrc, 1, 4);
+    multiplicateMatrix(matrixsrc, matrix, 1, 4, 4, 4, tmp);
+    //qDebug() << tmp.x() << tmp.y() << tmp.z() << "tmp";
+    this->setX(tmp.x());
+    this->setZ(tmp.z());
+}
+
 void Point3D::transform(const std::shared_ptr<Matrix> matrix)
 {
     std::vector<double> result(4);

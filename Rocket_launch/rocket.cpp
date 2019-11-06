@@ -11,68 +11,72 @@ void rocket::addModule(Cone &_cone)
     this->modules.push_back(_cone);
 }
 
-void rocket::createRocket(qreal _scale)
+void rocket::createRocket(Point3D RocketCenter, qreal Scale)
 {
-    this->_scale = _scale;
+    this->scale = Scale;
+    this->rocketCenter = RocketCenter;
     Cone cone0, cone1, cone2, cone3, cone4, cone5;
-    Point3D center(0, 0, 335);
-    qreal radius1 = 0;
-    qreal radius2 = 30;
-    qreal height = 30;
-
+    int x = rocketCenter.x();
+    int y = rocketCenter.y();
+    int z = rocketCenter.z();
+    qreal radius1 = 30 * scale;
+    qreal radius2 = 40 * scale;
+    qreal height = 30 * scale;
+    Point3D center(x, y, z + height / 2);
     cone0.createCone(center, radius1, radius2, height);
     this->addModule(cone0);
+    z += height;
 
-    center.setX(0);
-    center.setY(0);
-    center.setZ(270);
-    radius1 = 30;
-    radius2 = 30;
-    height = 100;
-
+    radius1 = 40 * scale;
+    radius2 = 30 * scale;
+    height = 20 * scale;
+    center.setX(x);
+    center.setY(y);
+    center.setZ(z + height / 2);
     cone1.createCone(center, radius1, radius2, height);
     this->addModule(cone1);
+    z += height;
 
-
-    center.setX(0);
-    center.setY(0);
-    center.setZ(210);
-    radius1 = 30;
-    radius2 = 40;
-    height = 20;
-
+    radius1 = 40 * scale;
+    radius2 = 40 * scale;
+    height = 150 * scale;
+    center.setX(x);
+    center.setY(y);
+    center.setZ(z + height / 2);
     cone2.createCone(center, radius1, radius2, height);
     this->addModule(cone2);
+    z += height;
 
-    center.setX(0);
-    center.setY(0);
-    center.setZ(125);
-    radius1 = 40;
-    radius2 = 40;
-    height = 150;
-
+    radius1 = 30 * scale;
+    radius2 = 40 * scale;
+    height = 20 * scale;
+    center.setX(x);
+    center.setY(y);
+    center.setZ(z + height / 2);
     cone3.createCone(center, radius1, radius2, height);
     this->addModule(cone3);
+    z += height;
 
-    center.setX(0);
-    center.setY(0);
-    center.setZ(40);
-    radius1 = 40;
-    radius2 = 30;
-    height = 20;
 
+    radius1 = 30 * scale;
+    radius2 = 30 * scale;
+    height = 100 * scale;
+    center.setX(x);
+    center.setY(y);
+    center.setZ(z + height / 2);
     cone4.createCone(center, radius1, radius2, height);
     this->addModule(cone4);
+    z += height;
 
-    center.setX(0);
-    center.setY(0);
-    center.setZ(15);
-    radius1 = 30;
-    radius2 = 40;
-    height = 30;
-
+    radius1 = 0 * scale;
+    radius2 = 30 * scale;
+    height = 30 * scale;
+    center.setX(x);
+    center.setY(y);
+    center.setZ(z + height / 2);
     cone5.createCone(center, radius1, radius2, height);
     this->addModule(cone5);
+    z += height;
 
 }
 
@@ -92,3 +96,12 @@ void rocket::rotateY(int angle_y)
 {
     this->angleY += angle_y;
 }
+
+void rocket::moveRocket()
+{
+    for (auto &module : modules)
+    {
+        module.MoveCone();
+    }
+}
+

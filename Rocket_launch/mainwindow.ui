@@ -6,149 +6,112 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1199</width>
-    <height>747</height>
+    <width>1153</width>
+    <height>794</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="Draw">
-    <property name="geometry">
-     <rect>
-      <x>980</x>
-      <y>40</y>
-      <width>141</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Draw</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="rotate">
-    <property name="geometry">
-     <rect>
-      <x>990</x>
-      <y>340</y>
-      <width>141</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>change POS</string>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="PaintingScene">
+   <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>951</width>
-      <height>561</height>
+      <width>871</width>
+      <height>761</height>
      </rect>
     </property>
+    <layout class="QVBoxLayout" name="Layuot"/>
    </widget>
-   <widget class="QLineEdit" name="editX">
+   <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>1020</x>
-      <y>240</y>
-      <width>113</width>
-      <height>21</height>
+      <x>890</x>
+      <y>10</y>
+      <width>251</width>
+      <height>721</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="editY">
-    <property name="geometry">
-     <rect>
-      <x>1020</x>
-      <y>270</y>
-      <width>113</width>
-      <height>21</height>
-     </rect>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="editZ">
-    <property name="geometry">
-     <rect>
-      <x>1020</x>
-      <y>300</y>
-      <width>113</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>240</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>X</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>270</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Y</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>300</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Z</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="AngleInfo">
-    <property name="geometry">
-     <rect>
-      <x>980</x>
-      <y>450</y>
-      <width>181</width>
-      <height>61</height>
-     </rect>
-    </property>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <layout class="QVBoxLayout" name="control">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_15">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Z</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="editZ"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>X</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="editX"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_20">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="editY"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="rotate">
+        <property name="text">
+         <string>change POS</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="Draw">
+        <property name="text">
+         <string>Draw</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13"/>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="AngleInfo"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Полетели!</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1199</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

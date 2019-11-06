@@ -57,6 +57,8 @@ public:
     void rotateY(int angle_y);
     //void rotateZ(int angle_z);
 
+    void move(int x, int y, int z);
+
     void transform(const std::shared_ptr<Matrix> matrix);
 private:
     qreal xp;
