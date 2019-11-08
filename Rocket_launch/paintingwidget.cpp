@@ -32,7 +32,7 @@ void PaintWidget::drawCone(Cone &_cone)
 
     //this->drawLine(0, 40, 800, 40);
 
-
+/*
     for (int i = 0; i < _cone.firstCircle.size(); i++)
     {
         Point3D tmp = _cone.firstCircle[i];
@@ -57,7 +57,7 @@ void PaintWidget::drawCone(Cone &_cone)
         //_cone.secondCircle[i].rotateX(ANGLE_X);
         //this->drawPoint(_cone.secondCircle[i].x(), _cone.secondCircle[i].y());
     }
-
+*/
     //qDebug() << _cone.firstCircle[2].x() << " " << _cone.firstCircle[2].y() << " " <<_cone.firstCircle[2].z();
     for (int i = 0; i < _cone.Edges.list.size(); i++)
     {
@@ -75,6 +75,7 @@ void PaintWidget::drawCone(Cone &_cone)
 
         //tmp1 = PerspectiveProjection(tmp1);
         //tmp2 = PerspectiveProjection(tmp2);
+        painter->setRenderHint(QPainter::Antialiasing, true);
         painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
         //this->drawLine(_cone.Edges.list[i].first.x(), _cone.Edges.list[i].first.y(),
@@ -118,7 +119,7 @@ void PaintWidget::PerspectiveProjection(Point3D &point)
     transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
     point.transform(transform_matrix);
 
-    double eps = 1e-5;
+    double eps = 1e-10;
     double znam = point.z() + cam_pos.z();
     if (znam < eps && znam > -eps) {
         znam = eps;
@@ -126,7 +127,6 @@ void PaintWidget::PerspectiveProjection(Point3D &point)
     double distCoef = cam_pos.z() / znam;
     point.setX(point.x() * distCoef);
     point.setY(point.y() * distCoef);
-    update();
 }
 
 void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)

@@ -22,6 +22,64 @@ void create_param_circle(double xc, double yc, double R, std::vector<Point3D> &C
     }
 }
 
+void draw_brezenham_circle(double xc, double yc, double R, std::vector<Point3D> &CirclePoints, double zc)
+{
+    int x = 0, y = R;
+    int d = 2 * (1 - R);
+    int y_end = 0;
+    int d1, d2;
+    while (y >= y_end)
+    {
+
+        Point3D FirstPoint(xc + x, yc - y, zc);
+        Point3D SecondPoint(xc - x, yc - y, zc);
+        Point3D ThirdPoint(xc - x, yc + y, zc);
+        Point3D LastPoint(xc + x, yc + y, zc);
+        CirclePoints.push_back(FirstPoint);
+        CirclePoints.push_back(SecondPoint);
+        CirclePoints.push_back(ThirdPoint);
+        CirclePoints.push_back(LastPoint);
+
+        if (d < 0)
+        {
+            d1 = 2 * d + 2 * y - 1;
+            if (d1 < 0)
+            {
+                x = x + 1;
+                d = d + 2 * x + 1;
+            }
+            else
+            {
+                x = x + 1;
+                y = y - 1;
+                d = d + 2 * (x - y + 1);
+            }
+        }
+        else if (d == 0)
+        {
+            x = x + 1;
+            y = y - 1;
+            d = d + 2 * (x - y + 1);
+        }
+        else
+        {
+            d2 = 2 * d - 2 * x - 1;
+            if (d2 < 0)
+            {
+                x = x + 1;
+                y = y - 1;
+                d = d + 2 * (x - y + 1);
+            }
+            else
+            {
+                y = y - 1;
+                d = d - 2 * y + 1;
+            }
+        }
+    }
+}
+
+
 void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height)
 {
     this->ConeCenter = _center;
@@ -48,6 +106,42 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     this->CreateCircle(this->firstCircle, FirstCenter, radius1);
     this->CreateCircle(this->secondCircle, SecondCenter, radius2);
 
+    for (int i = 0; i < this->firstCircle.size() - 4; i += 4)
+    {
+        if (i == firstCircle.size() - 8)
+        {
+            Edges.addEdge(firstCircle[i], firstCircle[i + 3]);
+            Edges.addEdge(firstCircle[i + 1], firstCircle[i + 2]);
+            //qDebug() << firstCircle[0].z() << "z";
+        }
+        else
+        {
+            Edges.addEdge(firstCircle[i], firstCircle[i + 4]);
+            //qDebug() << firstCircle[i + 4].z() << "is z " << i << " " <<  firstCircle.size();
+            Edges.addEdge(firstCircle[i + 1], firstCircle[i + 5]);
+            Edges.addEdge(firstCircle[i + 2], firstCircle[i + 6]);
+            Edges.addEdge(firstCircle[i + 3], firstCircle[i + 7]);
+        }
+    }
+
+    for (int i = 0; i < this->secondCircle.size() - 4; i += 4)
+    {
+        if (i == secondCircle.size() - 8)
+        {
+            Edges.addEdge(secondCircle[i], secondCircle[i + 3]);
+            Edges.addEdge(secondCircle[i + 1], secondCircle[i + 2]);
+            //Edges.addEdge(firstCircle[i], firstCircle[0]);
+            //qDebug() << firstCircle[0].z() << "z";
+        }
+        else
+        {
+            Edges.addEdge(secondCircle[i], secondCircle[i + 4]);
+            //qDebug() << firstCircle[i + 4].z() << "is z " << i << " " <<  firstCircle.size();
+            Edges.addEdge(secondCircle[i + 1], secondCircle[i + 5]);
+            Edges.addEdge(secondCircle[i + 2], secondCircle[i + 6]);
+            Edges.addEdge(secondCircle[i + 3], secondCircle[i + 7]);
+        }
+    }
 
     Point3D tmp1;
     Point3D tmp2;
@@ -55,8 +149,8 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
 
     if (radius1 <= radius2 && this->firstCircle.size() != 4)
     {
-        int k = this->secondCircle.size() / this->firstCircle.size();
-        for (int i = 0; i < this->firstCircle.size(); i += 92)
+        qreal k = this->secondCircle.size() / this->firstCircle.size();
+        for (qreal i = 0; i < this->firstCircle.size(); i += 74)
         {
 
             // Это, если что - полигоны
@@ -83,7 +177,7 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     {
         int k = this->firstCircle.size() / this->secondCircle.size();
         //qDebug() << k << " is k";
-        for (int i = 0; i < this->secondCircle.size(); i += 92)
+        for (int i = 0; i < this->secondCircle.size(); i += 74)
         {
             tmp1.changeAll(secondCircle[i].x(), secondCircle[i].y(), secondCircle[i].z());
             tmp2.changeAll(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i * k].z());
@@ -107,7 +201,7 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
 
 void Cone::CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius)
 {
-    create_param_circle(_center.x(), _center.y(), radius, CirclePoints, _center.z());
+    draw_brezenham_circle(_center.x(), _center.y(), radius, CirclePoints, _center.z());
 }
 // сделать вращение для каждой точки !!! по каждой координате и в цикле построения окружности выводить какждую точку через поворот
 // в объекте cone хранить угол по каждой координате, значение которых равно сумме всех углов поворотов.

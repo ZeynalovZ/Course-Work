@@ -19,42 +19,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Создание и начальная инициализация объектов
-    //scene = new Drawer(this);
-
-//    drawer = new Drawer();
-//    scene = new QPixmap(X_SIZE, Y_SIZE);
-//    scene->fill(QColor(Qt::white));
-//    painter = new QPainter(this);
-//    painter->setPen(QColor(Qt::black));
-
-//    ui->PaintingScene->setPixmap(*scene);
     scene = new PaintWidget(this);
 
-    //    QPixmap scene1(951, 561);
-    //    scene1.fill(QColor(Qt::white));
-    //    QPainter painter(&scene1);
-    //    painter.setPen(Qt::red);
-    //    painter.drawLine(100, 100, 300, 300);
-    //    scene->addPixmap(scene1);
-
-    //ui->PaintingScene->setScene(scene);
-    //ui->PaintingScene->render(painter);
-    //ui->PaintingScene->setBackgroundBrush(img);
-    //ui->PaintingScene->setCacheMode(QGraphicsView::CacheBackground);
     // Создадим ракету передав в нее центр основания ракеты и ее масштаб
     Point3D rocketCenter(0, 0, 0);
     _rocket.createRocket(rocketCenter, SCALE);
+    Point3D coneCenter(150, 150, 50);
+    cone.createCone(coneCenter, 30, 30, 100);
     cameraPosition.setX(0);
     cameraPosition.setY(0);
-    cameraPosition.setZ(-100000);
+    cameraPosition.setZ(-1000);
 
     // todo
 
     /*
      * добавить кучу алгоритмов лайк построчное заполнение
      * алгоритм использующий z буффер
-     * добавить движние ракеты
-     * перевести все к экранным координатам
      *
      */
 
@@ -112,6 +92,27 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         //cameraPosition.setZ(cameraPosition.z() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
     }
+    else if (event->key() == Qt::Key_Y)
+    {
+        cameraPosition.setZ(cameraPosition.z() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+        //cameraPosition.setZ(cameraPosition.z() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+    }
+    else if (event->key() == Qt::Key_H)
+    {
+        cameraPosition.setZ(cameraPosition.z() + 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+        //cameraPosition.setZ(cameraPosition.z() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+    }
+    else if (event->key() == Qt::Key_Space)
+    {
+         on_GoButton_clicked();
+        //cameraPosition.setY(cameraPosition.y() - 5);
+        //cameraPosition.setZ(cameraPosition.z() - 5);
+        //cameraPosition.setY(cameraPosition.y() - 5);
+    }
     QString str0 = QString::number(CameraAngleX);
     QString str1 = QString::number(CameraAngleY);
     QString str2 = QString::number(CameraAngleZ);
@@ -145,7 +146,7 @@ void MainWindow::render()
     second.changeAll(0, 0, -50);
     scene->drawLine3D(first, second);
 
-
+    scene->drawCone(cone);
     scene->drawRocket(_rocket, cameraPosition);
 
 }
@@ -190,14 +191,14 @@ void MainWindow::MoveRocket()
 
 */
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_GoButton_clicked()
 {
     QTimer t;
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100; i++)
     {
         _rocket.moveRocket();
         render();
-        t.start(1000000);
+        t.start(10000 - i * 5);
         repaint();
     }
 }

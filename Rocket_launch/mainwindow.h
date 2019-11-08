@@ -32,7 +32,8 @@ private slots:
     void on_rotate_clicked();
 
     void MoveRocket();
-    void on_pushButton_clicked();
+
+    void on_GoButton_clicked();
 
 public:
     int CameraAngleX = 0;
@@ -46,7 +47,7 @@ private:
     QPainter *painter;
     PaintWidget *scene;
     //Drawer *drawer;
-
+    Cone cone;
 };
 
 #endif // MAINWINDOW_H

@@ -3,6 +3,7 @@
 #include "point3d.h"
 #include "baseobject.h"
 #include "edges.h"
+#include "cone.h"
 #include <vector>
 // ::baseobject
 class Cone : public BaseObject

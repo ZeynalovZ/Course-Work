@@ -102,7 +102,7 @@
        <widget class="QTextEdit" name="AngleInfo"/>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="GoButton">
         <property name="text">
          <string>Полетели!</string>
         </property>
