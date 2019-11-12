@@ -226,6 +226,7 @@ Makefile: Rocket_launch.pro ../../../msys64/mingw64/share/qt5/mkspecs/win32-g++/
 		../../../msys64/mingw64/share/qt5/mkspecs/features/qt_config.prf \
 		../../../msys64/mingw64/share/qt5/mkspecs/win32-g++/qmake.conf \
 		../../../msys64/mingw64/share/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../msys64/mingw64/share/qt5/mkspecs/features/exclusive_builds.prf \
 		../../../msys64/mingw64/share/qt5/mkspecs/features/toolchain.prf \
 		../../../msys64/mingw64/share/qt5/mkspecs/features/default_pre.prf \
@@ -414,6 +415,7 @@ Makefile: Rocket_launch.pro ../../../msys64/mingw64/share/qt5/mkspecs/win32-g++/
 ../../../msys64/mingw64/share/qt5/mkspecs/features/qt_config.prf:
 ../../../msys64/mingw64/share/qt5/mkspecs/win32-g++/qmake.conf:
 ../../../msys64/mingw64/share/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../msys64/mingw64/share/qt5/mkspecs/features/exclusive_builds.prf:
 ../../../msys64/mingw64/share/qt5/mkspecs/features/toolchain.prf:
 ../../../msys64/mingw64/share/qt5/mkspecs/features/default_pre.prf:

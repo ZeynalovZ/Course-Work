@@ -11,6 +11,9 @@
 #include "transfor_matrix.h"
 #include "point3d.h"
 #include "basedrawer.h"
+#include "cone.h"
+#include "triangle.h"
+#include "edges.h"
 
 
 class PaintWidget : public QWidget
@@ -24,11 +27,13 @@ public:
     void drawCone(Cone &_cone);
     void drawRocket(rocket &_rocket, Point3D CameraPosition);
     void drawLine3D(Point3D first, Point3D second);
+    void drawLaunchPad(Point3D point);
     void PerspectiveProjection(Point3D &point);
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
+    void fillObject(Point3D A, Point3D B, Point3D C);
     void clear();
     Camera _camera;
-
+    std::vector<Triangle> trianglesOnImage;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
@@ -42,6 +47,7 @@ private:
     QColor fill_color;
     QColor bg_color;
     QPainter *painter;
+
 
 };
 

@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Point3D rocketCenter(0, 0, 0);
     _rocket.createRocket(rocketCenter, SCALE);
     Point3D coneCenter(150, 150, 50);
-    cone.createCone(coneCenter, 30, 30, 100);
+    cone.createCone(coneCenter, 30, 30, 100, 5);
     cameraPosition.setX(0);
     cameraPosition.setY(0);
     cameraPosition.setZ(-1000);
@@ -132,8 +132,7 @@ void MainWindow::render()
 {
 
     scene->clear();
-
-
+    /*
     Point3D first(-400, 0, 0);
     Point3D second(400, 0, 0);
     scene->drawLine3D(first, second);
@@ -145,18 +144,15 @@ void MainWindow::render()
     first.changeAll(0, 0, 400);
     second.changeAll(0, 0, -50);
     scene->drawLine3D(first, second);
+    */
+    Point3D point(0, 0, -25);
 
+    scene->drawLaunchPad(point);
     scene->drawCone(cone);
     scene->drawRocket(_rocket, cameraPosition);
+    //qDebug() << scene->trianglesOnImage.size();
+    //scene->fillObject(cone);
 
-}
-
-unsigned long long tick(void)
-{
-    unsigned long long d;
-    __asm__ __volatile__ ("rdtsc" : "=A" (d) );
-
-    return d;
 }
 
 void MainWindow::on_Draw_clicked()

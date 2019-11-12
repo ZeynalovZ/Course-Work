@@ -3,16 +3,23 @@
 #include "point3d.h"
 #include "baseobject.h"
 #include "edges.h"
-#include "cone.h"
 #include <vector>
+#include "triangle.h"
+
+
+
+
 // ::baseobject
 class Cone : public BaseObject
 {
 public:
     Cone(){}
 
-    void createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height);
-    void CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius);
+    void createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height, int VertexCount);
+    void CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius, int n);
+    void createRightPolygon(double xc, double yc, double zc, double R,
+                            std::vector<Point3D> &CirclePoints, int n);
+    void createConnectedLines();
     void Rotatex(int angle_x);
     void Rotatey(int angle_y, qreal _y, qreal _z);
     void Rotatez(int angle_z, qreal _y, qreal _x);
@@ -28,6 +35,11 @@ public:
 
     std::vector<Point3D> firstCircle;
     std::vector<Point3D> secondCircle;
+    std::vector<Triangle> Triangles;
+    std::vector<Triangle> TrianglesImage;
+
+    Point3D FirstCenter;
+    Point3D SecondCenter;
     edges Edges;
 };
 

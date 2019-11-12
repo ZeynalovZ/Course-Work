@@ -1,6 +1,7 @@
 #include "rocket.h"
 #include <QDebug>
 #define SCALE 10
+#define EdgesCircleCount 15
 rocket::rocket(Point3D center)
 {
 
@@ -23,7 +24,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     qreal radius2 = 40 * scale;
     qreal height = 30 * scale;
     Point3D center(x, y, z + height / 2);
-    cone0.createCone(center, radius1, radius2, height);
+    cone0.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone0);
     z += height;
 
@@ -33,7 +34,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone1.createCone(center, radius1, radius2, height);
+    cone1.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone1);
     z += height;
 
@@ -43,7 +44,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone2.createCone(center, radius1, radius2, height);
+    cone2.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone2);
     z += height;
 
@@ -53,7 +54,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone3.createCone(center, radius1, radius2, height);
+    cone3.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone3);
     z += height;
 
@@ -64,7 +65,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone4.createCone(center, radius1, radius2, height);
+    cone4.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone4);
     z += height;
 
@@ -74,7 +75,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone5.createCone(center, radius1, radius2, height);
+    cone5.createCone(center, radius1, radius2, height, EdgesCircleCount);
     this->addModule(cone5);
     z += height;
 

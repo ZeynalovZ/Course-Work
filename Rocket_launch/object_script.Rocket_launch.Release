@@ -1,3 +1,4 @@
+release/fire.o
 release/main.o
 release/mainwindow.o
 release/basedrawer.o
@@ -13,6 +14,7 @@ release/camera.o
 release/matrix.o
 release/transfor_matrix.o
 release/paintingwidget.o
+release/triangle.o
 release/moc_mainwindow.o
 release/moc_drawer.o
 release/moc_paintingwidget.o
