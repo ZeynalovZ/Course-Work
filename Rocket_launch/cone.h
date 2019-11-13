@@ -5,6 +5,7 @@
 #include "edges.h"
 #include <vector>
 #include "triangle.h"
+#include <QColor>
 
 
 
@@ -15,7 +16,7 @@ class Cone : public BaseObject
 public:
     Cone(){}
 
-    void createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height, int VertexCount);
+    void createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height, int VertexCount, QColor ObjColor);
     void CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius, int n);
     void createRightPolygon(double xc, double yc, double zc, double R,
                             std::vector<Point3D> &CirclePoints, int n);
@@ -41,6 +42,8 @@ public:
     Point3D FirstCenter;
     Point3D SecondCenter;
     edges Edges;
+    QColor ObjectColor;
+
 };
 
 #endif // CONE_H

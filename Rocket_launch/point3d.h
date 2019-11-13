@@ -12,12 +12,22 @@ public:
 
     }
 
+
     Point3D(qreal _x, qreal _y, qreal _z)
     {
         xp = _x;
         yp = _y;
         zp = _z;
     }
+
+
+
+
+//    friend const Point3D operator +(const Point3D p1, const Point3D p2)
+//    {
+//        return new Point3D(p1.x() + p2.x(), p1.y() + p2.y(), p1.z() + p2.z());
+//    }
+
     // Getters
     qreal x()
     {
@@ -66,5 +76,7 @@ private:
     qreal zp;
 
 };
+
+
 
 #endif // POINT3D_H

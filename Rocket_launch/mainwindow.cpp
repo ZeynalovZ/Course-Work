@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     Point3D rocketCenter(0, 0, 0);
     _rocket.createRocket(rocketCenter, SCALE);
     Point3D coneCenter(150, 150, 50);
-    cone.createCone(coneCenter, 30, 30, 100, 5);
+    // Отдельный цилиндр рядом с ракетой
+    cone.createCone(coneCenter, 30, 30, 100, 5, QColor(Qt::red));
     cameraPosition.setX(0);
     cameraPosition.setY(0);
     cameraPosition.setZ(-1000);
@@ -145,11 +146,15 @@ void MainWindow::render()
     second.changeAll(0, 0, -50);
     scene->drawLine3D(first, second);
     */
-    Point3D point(0, 0, -25);
+    Point3D point(0, 0, -25); // launchpad center
 
     scene->drawLaunchPad(point);
     scene->drawCone(cone);
     scene->drawRocket(_rocket, cameraPosition);
+//    Point3D p1(191, 153, 0);
+//    Point3D p2(285, 161, 0);
+//    Point3D p3(362, 232, 0);
+//    scene->fillObject(p1, p2, p3);
     //qDebug() << scene->trianglesOnImage.size();
     //scene->fillObject(cone);
 

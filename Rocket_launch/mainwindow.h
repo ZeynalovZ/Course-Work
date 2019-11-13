@@ -48,6 +48,7 @@ private:
     PaintWidget *scene;
     //Drawer *drawer;
     Cone cone;
+    QColor RocketColor = QColor(Qt::gray);
 };
 
 #endif // MAINWINDOW_H

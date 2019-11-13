@@ -81,13 +81,13 @@ void draw_brezenham_circle(double xc, double yc, double R, std::vector<Point3D> 
 }
 
 
-void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height, int VertexCount)
+void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _height, int VertexCount, QColor ObjColor)
 {
     this->ConeCenter = _center;
     this->radius1 = _radius1;
     this->radius2 = _radius2;
     this->height = _height;
-
+    this->ObjectColor = ObjColor;
     qreal distance = _height / 2;
     Point3D ConeCenter = _center;
     qreal radius1 = _radius1;
@@ -107,7 +107,6 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     this->CreateCircle(this->firstCircle, FirstCenter, radius1, VertexCount);
     this->CreateCircle(this->secondCircle, SecondCenter, radius2, VertexCount);
     createConnectedLines();
-    TrianglesImage = Triangles;
 
     /*
     for (int i = 0; i < Triangles.size(); i++)
@@ -269,8 +268,18 @@ void Cone::createConnectedLines()
         C = secondCircle[0];
         Triangle tr(A, B, C);
         Triangles.push_back(tr);
+
+        for (int i = 0; i < secondCircle.size() - 2; i++)
+        {
+            A = secondCircle[0];
+            B = secondCircle[i + 1];
+            C = secondCircle[i + 2];
+            Triangle tr(A, B, C);
+            Triangles.push_back(tr);
+        }
     }
 
+    // конус с вершиной внизу
     if (radius2 == 0 && radius1 != 0)
     {
         for (int i = 0; i < firstCircle.size() - 1; i++)
@@ -284,8 +293,61 @@ void Cone::createConnectedLines()
         C = firstCircle[0];
         Triangle tr(A, B, C);
         Triangles.push_back(tr);
+
+        for (int i = 0; i < firstCircle.size() - 2; i++)
+        {
+            A = firstCircle[0];
+            B = firstCircle[i + 1];
+            C = firstCircle[i + 2];
+            Triangle tr(A, B, C);
+            Triangles.push_back(tr);
+        }
     }
 
+    // обычный конус
+    if (radius1 != 0 && radius2 != 0)
+    {
+        for (int i = 0; i < firstCircle.size() - 1; i++)
+        {
+            A = firstCircle[i];
+            B = secondCircle[i];
+            C = secondCircle[i + 1];
+            Triangle tr(A, B, C);
+            Triangles.push_back(tr);
+        }
+        for (int i = 1; i < secondCircle.size(); i++)
+        {
+            A = secondCircle[i];
+            B = firstCircle[i];
+            C = firstCircle[i - 1];
+            Triangle tr1(A, B, C);
+            Triangles.push_back(tr1);
+        }
+
+        for (int i = 0; i < firstCircle.size() - 2; i++)
+        {
+            A = firstCircle[0];
+            B = firstCircle[i + 1];
+            C = firstCircle[i + 2];
+            Triangle tr(A, B, C);
+            Triangles.push_back(tr);
+        }
+
+        for (int i = 0; i < secondCircle.size() - 2; i++)
+        {
+            A = secondCircle[0];
+            B = secondCircle[i + 1];
+            C = secondCircle[i + 2];
+            Triangle tr(A, B, C);
+            Triangles.push_back(tr);
+        }
+
+    }
+
+
+
+
+    /*
     if (radius1 != 0 && radius2 != 0)
     {
         A.changeAll(firstCircle[0].x(), firstCircle[0].y(), firstCircle[0].z());
@@ -333,6 +395,7 @@ void Cone::createConnectedLines()
             }
         }
     }
+    */
 
 }
 // сделать вращение для каждой точки !!! по каждой координате и в цикле построения окружности выводить какждую точку через поворот
@@ -360,11 +423,14 @@ void Cone::Rotatex(int angle_x)
         //this->drawPoint(tmp.x(), tmp.y());
     }
 
+    /*
+
     for (int i = 0; i < this->Edges.list.size(); i++)
     {
         this->Edges.list[i].first.rotateX(angle_x);
         this->Edges.list[i].second.rotateX(angle_x);
     }
+    */
 }
 
 void Cone::Rotatey(int angle_y, qreal _y, qreal _z)

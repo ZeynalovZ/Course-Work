@@ -24,7 +24,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     qreal radius2 = 40 * scale;
     qreal height = 30 * scale;
     Point3D center(x, y, z + height / 2);
-    cone0.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone0.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone0);
     z += height;
 
@@ -34,7 +34,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone1.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone1.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone1);
     z += height;
 
@@ -44,7 +44,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone2.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone2.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone2);
     z += height;
 
@@ -54,7 +54,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone3.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone3.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone3);
     z += height;
 
@@ -65,7 +65,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone4.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone4.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone4);
     z += height;
 
@@ -75,7 +75,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale)
     center.setX(x);
     center.setY(y);
     center.setZ(z + height / 2);
-    cone5.createCone(center, radius1, radius2, height, EdgesCircleCount);
+    cone5.createCone(center, radius1, radius2, height, EdgesCircleCount, RocketColor);
     this->addModule(cone5);
     z += height;
 

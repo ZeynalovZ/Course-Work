@@ -15,6 +15,21 @@
 #include "triangle.h"
 #include "edges.h"
 
+#define WIDTH  850
+#define HEIGHT  715
+
+struct DepthBuffer
+{
+    int *zbuffer = new int[WIDTH*HEIGHT];
+    void fillbuffer()
+    {
+        for (int i = 0; i < WIDTH*HEIGHT; i++)
+        {
+            zbuffer[i] = -1000;
+        }
+    }
+};
+
 
 class PaintWidget : public QWidget
 {
@@ -47,6 +62,7 @@ private:
     QColor fill_color;
     QColor bg_color;
     QPainter *painter;
+    DepthBuffer ZBuffer;
 
 
 };

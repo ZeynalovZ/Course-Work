@@ -39,6 +39,7 @@ public:
     int angleY = 0;
     int angleZ = 0;
     qreal scale;
+    QColor RocketColor = QColor(Qt::gray);
 };
 
 #endif // ROCKET_H

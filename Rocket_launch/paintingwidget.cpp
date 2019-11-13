@@ -5,17 +5,21 @@
 
 #define X_SIZE  850 / 2
 #define Y_SIZE  715 / 2
+
+
 PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
 {
     widget_width = 850;
     widget_height = 715;
-    bg_color = Qt::white;
+    bg_color = Qt::black;
     borders_color = Qt::black;
     fill_color = Qt::blue;
     image = new QImage(widget_width, widget_height, QImage::Format_RGB32);
     image->fill(bg_color);
     setGeometry(20, 20, widget_width, widget_height);
     painter = new QPainter(image);
+    ZBuffer.fillbuffer();
+    //fillAutoZBuffer(ZBuffer);
 }
 
 void change(Point3D &point)
@@ -61,7 +65,7 @@ void PaintWidget::drawCone(Cone &_cone)
     */
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-    for (auto &triangle : _cone.TrianglesImage)
+    for (auto &triangle : _cone.Triangles)
     {
         Point3D tmp1 = triangle.A;
         Point3D tmp2 = triangle.B;
@@ -77,15 +81,15 @@ void PaintWidget::drawCone(Cone &_cone)
         PerspectiveProjection(tmp1);
         PerspectiveProjection(tmp2);
         PerspectiveProjection(tmp3);
+        painter->setPen(_cone.ObjectColor);
         fillObject(tmp1, tmp2, tmp3);
+        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
+        //                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
 
-        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
-
-        painter->drawLine(tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE,
-                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
-        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
+        //        painter->drawLine(tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE,
+        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
+        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
+        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
         Triangle triangleOnImageTmp(tmp1, tmp2, tmp3);
         trianglesOnImage.push_back(triangleOnImageTmp);
 
@@ -141,7 +145,7 @@ void PaintWidget::drawLine3D(Point3D first, Point3D second)
 void PaintWidget::drawLaunchPad(Point3D point)
 {
     Cone cone;
-    cone.createCone(point, 40, 40, 50, 4);
+    cone.createCone(point, 40, 40, 50, 4, QColor(Qt::green));
     drawCone(cone);
 }
 
@@ -202,29 +206,132 @@ double getMinFor3(double x1, double x2, double x3)
     }
     return max;
 }
+
+
+
+void sortPointsY(Point3D &A, Point3D &B, Point3D &C)
+{
+    Point3D points[3];
+    points[0] = A;
+    points[1] = B;
+    points[2] = C;
+
+    Point3D temp;
+
+    // Сортировка массива пузырьком
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3 - i - 1; j++) {
+            if (points[j].y() > points[j + 1].y())
+            {
+                // меняем элементы местами
+                temp = points[j];
+                points[j] = points[j + 1];
+                points[j + 1] = temp;
+            }
+        }
+    }
+    A = points[0];
+    B = points[1];
+    C = points[2];
+}
+
 void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
 {
 
+    //qDebug() << A.y() << B.y() << C.y();
     // for object
     // needed at least 2 points
-    QColor color_background = QColor(Qt::white);
-    QColor color_shading = QColor(Qt::gray);
-    painter->setPen(color_shading);
+
+    // change is a fuction transforming to display axis
     change(A);
     change(B);
     change(C);
-    double sx1 = A.x();
-    double sx2 = B.x();
-    double sx3 = C.x();
-    double sy1 = A.y();
-    double sy2 = B.y();
-    double sy3 = C.y();
+    if (A.y() > B.y()) std::swap(A, B);
+    if (A.y() > C.y()) std::swap(A, C);
+    if (B.y() > C.y()) std::swap(B, C);
 
-    double xmax = getMaxFor3(sx1, sx2, sx3);
-    double ymax = getMaxFor3(sy1, sy2, sy3);
-    double xmin = getMinFor3(sx1, sx2, sx3);
-    double ymin = getMinFor3(sy1, sy2, sy3);
+    int total_height = C.y() - A.y();
 
+    for (int i = 0; i < total_height; i++)
+    {
+        bool second_half = i > B.y() - A.y() || B.y() == A.y();
+        int segment_height = second_half ? C.y() - B.y() : B.y() - A.y();
+        if (total_height != 0 && segment_height != 0)
+        {
+            float alpha = (float)i / total_height;
+            float beta  = (float)(i - (second_half ? B.y() - A.y() : 0)) / segment_height; // be careful: with above conditions no division by zero here
+//            int x_beg = A.x() + (C.x() - A.x())*alpha;
+//            int x_last = second_half ? B.x() + (C.x() - B.x()) * beta : A.x() + (B.x() - A.x()) * beta;
+            Point3D A1(A.x() + (C.x() - A.x()) * alpha, A.y() + (C.y() - A.y()) * alpha, A.y() + (C.y() - A.y()) * alpha) ;
+            Point3D B1(second_half ? B.x() + (C.x() - B.x()) * beta : A.x() + (B.x() - A.x()) * beta,
+                       second_half ? B.y() + (C.y() - B.y()) * beta : A.y() + (B.y() - A.y()) * beta,
+                       second_half ? B.z() + (C.z() - B.z()) * beta : A.z() + (B.z() - A.z()) * beta);
+            if (A1.x() > B1.x()) std::swap(A1, B1);
+            for (int j = A1.x(); j <= B1.x(); j++)
+            {
+                //float phi = A1.x() == B1.x() ? 1. : (float)(j - A1.x())/(float)(B1.x() - A1.x());
+                //qDebug() << phi;
+                //Point3D P(A1.x() + (B1.x() - A1.x()) * phi, A1.y() + (B1.y() - A1.y()) * phi, A1.z() + (B1.z() - A1.z()));
+
+                //int idx = P.x() + P.y() * WIDTH;
+                //qDebug() << ZBuffer.zbuffer[idx] << P.z() << "hey";
+//                if (ZBuffer.zbuffer[idx] <= P.z())
+//                {
+//                    ZBuffer.zbuffer[idx] = P.z();
+//                    painter->drawPoint(P.x(), P.y());
+//                }
+
+//                if (z >= ZBuffer.zbuffer[j + i * WIDTH])
+//                {
+//                    ZBuffer.zbuffer[j + i * WIDTH] = z;
+//                    painter->drawPoint(j, A.y() + i);
+//                }
+
+                //qDebug() << A.z();
+                //painter->drawPoint(j, A.y() + i);
+                painter->drawPoint(j, A.y() + i);
+                //image.set(j, y, color); // attention, due to int casts t0.y+i != A.y
+            }
+        }
+
+    }
+    update();
+
+
+    /*
+    int y_curr = A.y();
+    int y_end = C.y();
+    int xa, xb, za, zb, z;
+
+    while (y_curr < y_end)
+    {
+        if (A.y() != B.y() && A.y() != C.y())
+        {
+            xa = A.x() + (B.x() - A.x()) * (y_curr - A.y()) / (B.y() - A.y());
+            xb = A.x() + (C.x() - A.x()) * (y_curr - A.y()) / (C.y() - A.y());
+            za = A.z() + (B.z() - A.z()) * (y_curr - A.y()) / (B.y() - A.y());
+            zb = A.z() + (C.z() - A.z()) * (y_curr - A.y()) / (C.y() - A.y());
+            for (int x = xa; x < xb; x++)
+            {
+                z = za + (zb - za) * (x - xa) / (xb - xa);
+
+//                if (z > ZBuffer.buffer[x][y_curr])
+//                {
+//                    ZBuffer.buffer[x][y_curr] = z;
+//                    painter->drawPoint(x, y_curr);
+//                }
+                if (x < xmax && x > xmin)
+                {
+                    painter->drawPoint(x, y_curr);
+                }
+
+            }
+
+        }
+        y_curr++;
+
+    }
+    */
     /*
     painter->drawLine(xmin, ymin, xmin, ymax);
     painter->drawLine(xmax, ymin, xmax, ymax);
@@ -244,6 +351,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
             //-----------------
     */
 
+    /*
     edges _edges;
     _edges.addEdge(A, B);
     _edges.addEdge(B, C);
@@ -278,19 +386,9 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
             while (x < xmax)
             {
                 //qDebug() << QPoint(x, y);
+                //painter->setPen(QColor(color_shading));
 
-                QColor color = image->pixelColor(QPoint(x, y));
-
-                if (color == color_background)
-                {
-                    painter->setPen(QColor(color_shading));
-                }
-                else if (color == color_shading)
-                {
-                    painter->setPen(QColor(color_background));
-                }
                 painter->drawPoint(x, y);
-
                 x++;
             }
             start_x += k;
@@ -298,7 +396,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
 
         }
     }
-
+    */
 
     painter->setPen(QColor(Qt::black));
 }
