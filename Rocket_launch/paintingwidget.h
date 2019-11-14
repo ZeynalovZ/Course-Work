@@ -14,9 +14,17 @@
 #include "cone.h"
 #include "triangle.h"
 #include "edges.h"
+#include "vector.h"
 
 #define WIDTH  850
 #define HEIGHT  715
+
+struct BarycentricCoords
+{
+    double b1;
+    double b2;
+    double b3;
+};
 
 struct DepthBuffer
 {
@@ -47,8 +55,11 @@ public:
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
     void clear();
+    void ComputeBarycentric(Point3D A, Point3D B, Point3D C);
     Camera _camera;
     std::vector<Triangle> trianglesOnImage;
+    DepthBuffer ZBuffer;
+    BarycentricCoords BarCoor;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
@@ -62,7 +73,7 @@ private:
     QColor fill_color;
     QColor bg_color;
     QPainter *painter;
-    DepthBuffer ZBuffer;
+
 
 
 };

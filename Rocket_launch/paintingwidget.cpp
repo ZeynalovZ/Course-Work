@@ -5,6 +5,7 @@
 
 #define X_SIZE  850 / 2
 #define Y_SIZE  715 / 2
+#define EPS 0.00001
 
 
 PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
@@ -18,7 +19,7 @@ PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
     image->fill(bg_color);
     setGeometry(20, 20, widget_width, widget_height);
     painter = new QPainter(image);
-    ZBuffer.fillbuffer();
+
     //fillAutoZBuffer(ZBuffer);
 }
 
@@ -82,7 +83,8 @@ void PaintWidget::drawCone(Cone &_cone)
         PerspectiveProjection(tmp2);
         PerspectiveProjection(tmp3);
         painter->setPen(_cone.ObjectColor);
-        fillObject(tmp1, tmp2, tmp3);
+//        fillObject(tmp1, tmp2, tmp3);
+        ComputeBarycentric(tmp1, tmp2, tmp3);
         //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
         //                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
 
@@ -145,7 +147,7 @@ void PaintWidget::drawLine3D(Point3D first, Point3D second)
 void PaintWidget::drawLaunchPad(Point3D point)
 {
     Cone cone;
-    cone.createCone(point, 300, 300, 50, 4, QColor(Qt::green));
+    cone.createCone(point, 300, 300, 50, 4, QColor(Qt::white));
     drawCone(cone);
 }
 
@@ -182,11 +184,15 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
 double getMaxFor3(double x1, double x2, double x3)
 {
     double max = x1;
-    if (max < x2)
+    if (x1 >= x2 && x1 >= x3)
+    {
+        max = x1;
+    }
+    if (x2 >= x1 && x2 >= x3)
     {
         max = x2;
     }
-    if (max < x3)
+    if (x3 >= x2 && x3 >= x1)
     {
         max = x3;
     }
@@ -195,16 +201,20 @@ double getMaxFor3(double x1, double x2, double x3)
 
 double getMinFor3(double x1, double x2, double x3)
 {
-    double max = x1;
-    if (max > x2)
+    double min = x1;
+    if (x1 < x2 && x1 < x3)
     {
-        max = x2;
+        min = x1;
     }
-    if (max > x3)
+    if (x2 < x1 && x2 < x3)
     {
-        max = x3;
+        min = x2;
     }
-    return max;
+    if (x3 < x2 && x3 < x1)
+    {
+        min = x3;
+    }
+    return min;
 }
 
 
@@ -243,12 +253,21 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     // needed at least 2 points
 
     // change is a fuction transforming to display axis
+
+    //qDebug() << A.y() << B.y() << C.y();
+
     change(A);
     change(B);
     change(C);
+
+
     if (A.y() > B.y()) std::swap(A, B);
     if (A.y() > C.y()) std::swap(A, C);
     if (B.y() > C.y()) std::swap(B, C);
+    //qDebug() << A.y() << B.y() << C.y();
+
+
+    //qDebug() << a << b << c << d;
 
     int total_height = C.y() - A.y();
 
@@ -260,36 +279,44 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
         {
             float alpha = (float)i / total_height;
             float beta  = (float)(i - (second_half ? B.y() - A.y() : 0)) / segment_height; // be careful: with above conditions no division by zero here
-//            int x_beg = A.x() + (C.x() - A.x())*alpha;
-//            int x_last = second_half ? B.x() + (C.x() - B.x()) * beta : A.x() + (B.x() - A.x()) * beta;
-            Point3D A1(A.x() + (C.x() - A.x()) * alpha, A.y() + (C.y() - A.y()) * alpha, A.y() + (C.y() - A.y()) * alpha) ;
+            //            int x_beg = A.x() + (C.x() - A.x())*alpha;
+            //            int x_last = second_half ? B.x() + (C.x() - B.x()) * beta : A.x() + (B.x() - A.x()) * beta;
+
+            Point3D A1(A.x() + (C.x() - A.x()) * alpha, A.y() + (C.y() - A.y()) * alpha, A.z() + (C.z() - A.z()) * alpha) ;
             Point3D B1(second_half ? B.x() + (C.x() - B.x()) * beta : A.x() + (B.x() - A.x()) * beta,
                        second_half ? B.y() + (C.y() - B.y()) * beta : A.y() + (B.y() - A.y()) * beta,
                        second_half ? B.z() + (C.z() - B.z()) * beta : A.z() + (B.z() - A.z()) * beta);
             if (A1.x() > B1.x()) std::swap(A1, B1);
             for (int j = A1.x(); j <= B1.x(); j++)
             {
-                //float phi = A1.x() == B1.x() ? 1. : (float)(j - A1.x())/(float)(B1.x() - A1.x());
-                //qDebug() << phi;
-                //Point3D P(A1.x() + (B1.x() - A1.x()) * phi, A1.y() + (B1.y() - A1.y()) * phi, A1.z() + (B1.z() - A1.z()));
+                float phi = A1.x() == B1.x() ? 1. : (float)(j - A1.x())/(float)(B1.x() - A1.x());
 
-                //int idx = P.x() + P.y() * WIDTH;
-                //qDebug() << ZBuffer.zbuffer[idx] << P.z() << "hey";
-//                if (ZBuffer.zbuffer[idx] <= P.z())
-//                {
-//                    ZBuffer.zbuffer[idx] = P.z();
-//                    painter->drawPoint(P.x(), P.y());
-//                }
+                Point3D P(A1.x() + (B1.x() - A1.x()) * phi, A1.y() + (B1.y() - A1.y()) * phi, A1.z() + (B1.z() - A1.z()) * phi);
 
-//                if (z >= ZBuffer.zbuffer[j + i * WIDTH])
-//                {
-//                    ZBuffer.zbuffer[j + i * WIDTH] = z;
-//                    painter->drawPoint(j, A.y() + i);
-//                }
+                //qDebug() << P.x() + P.y() * WIDTH << HEIGHT * WIDTH;
+                //qDebug() << P.x() << P.y() << "hey";
+                int idx = P.x() + P.y() * WIDTH;
+                int ix = idx % WIDTH;
+                int iy = idx / WIDTH;
+                //qDebug() << ix << iy << idx << WIDTH * HEIGHT;
+
+                //                if (ZBuffer.zbuffer[idx] < P.z())
+                //                {
+                //                    ZBuffer.zbuffer[idx] = P.z();
+                //                    painter->drawPoint(P.x(), P.y());
+                //                }
+
+                painter->drawPoint(j, A.y() + i);
+
+                //                if (z >= ZBuffer.zbuffer[j + i * WIDTH])
+                //                {
+                //                    ZBuffer.zbuffer[j + i * WIDTH] = z;
+                //                    painter->drawPoint(j, A.y() + i);
+                //                }
 
                 //qDebug() << A.z();
                 //painter->drawPoint(j, A.y() + i);
-                painter->drawPoint(j, A.y() + i);
+                //painter->drawPoint(j, A.y() + i);
                 //image.set(j, y, color); // attention, due to int casts t0.y+i != A.y
             }
         }
@@ -409,24 +436,106 @@ void PaintWidget::clear()
     //trianglesOnImage.clear();
 }
 
-
-void PaintWidget::mousePressEvent(QMouseEvent *event)
+void PaintWidget::ComputeBarycentric(Point3D A, Point3D B, Point3D C)
 {
-    QPainter painter(image);
-    painter.setPen(borders_color);
+//    painter->setPen(QColor(Qt::white));
+    change(A);
+    change(B);
+    change(C);
 
-    update();
+
+    qDebug() << A.y() << B.y() << C.y() << " y1 ==";
+
+
+    if (B.x() > A.x()) std::swap(B, A);
+    if (B.x() > C.x()) std::swap(B, C);
+    if (A.x() > C.x()) std::swap(A, C);
+
+
+    if (A.y() > B.y()) std::swap(A, B);
+    if (A.y() > C.y()) std::swap(A, C);
+    if (B.y() > C.y()) std::swap(B, C);
+    qDebug() << A.y() << B.y() << C.y() << " y2 ==";
+    //qDebug() << A.x() << B.x() << C.x() << " x ==";
+
+    double x1 = A.x();
+    double x2 = B.x();
+    double x3 = C.x();
+    double y1 = A.y();
+    double y2 = B.y();
+    double y3 = C.y();
+    Point3D P;
+    double xmax, xmin, ymax, ymin;
+    xmax = getMaxFor3(x1, x2, x3);
+    xmin = getMinFor3(x1, x2, x3);
+    ymax = getMaxFor3(y1, y2, y3);
+    ymin = getMinFor3(y1, y2, y3);
+    double square = (B.y() - C.y()) * (A.x() - C.x()) + (A.y() - C.y()) * (C.x() - B.x());
+    //qDebug() << square;
+    for (int y = ymin; y < ymax; y++)
+    {
+        for (int x = xmin; x < xmax; x++)
+        {
+            P.changeAll(x, y, 0);
+            if (square > EPS)
+            {
+                BarCoor.b1 = (P.y() - C.y()) * (A.x() - C.x()) + (A.y() - C.y()) * (C.x() - P.x());
+                BarCoor.b1 /= square;
+                BarCoor.b2 = (P.y() - B.y()) * (C.x() - B.x()) + (C.y() - B.y()) * (B.x() - P.x());
+                BarCoor.b2 /= square;
+                BarCoor.b3 = 1 - BarCoor.b1 - BarCoor.b2;
+                //qDebug() << BarCoor.b1 << BarCoor.b2 << BarCoor.b3;
+                if (BarCoor.b1 >= 0 && BarCoor.b1 <= 1 && BarCoor.b2 >= 0 && BarCoor.b2 <= 1 &&
+                        BarCoor.b3 >= 0 && BarCoor.b3 <=1)
+                {
+                    //qDebug() << BarCoor.b1 << BarCoor.b2 << BarCoor.b3;
+                    painter->drawPoint(x, y);
+                }
+            }
+            else
+            {
+                //qDebug() << "hey";
+                BarCoor.b1 = -1;
+            }
+        }
+        update();
+    }
+
+    /*
+    double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
+    if (square > EPS)
+    {
+        BarCoor.b1 = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
+        BarCoor.b1 /= square;
+        BarCoor.b2 = (P.y() - A.y()) * (C.x() - A.x()) + (C.y() - A.y()) * (A.x() - P.x());
+        BarCoor.b2 /= square;
+        BarCoor.b3 = 1 - barCoords[0] - barCoords[1];
+    }
+    else
+    {
+        BarCoor.b1 = -1;
+    }
+    */
 }
 
-void PaintWidget::mouseMoveEvent(QMouseEvent *event)
-{
 
-    update();
-}
+    void PaintWidget::mousePressEvent(QMouseEvent *event)
+    {
+        QPainter painter(image);
+        painter.setPen(borders_color);
 
-void PaintWidget::paintEvent(QPaintEvent *event)
-{
-    QPainter painter(this);
-    painter.drawImage(0, 0, *image);
-    Q_UNUSED(event);
-}
+        update();
+    }
+
+    void PaintWidget::mouseMoveEvent(QMouseEvent *event)
+    {
+
+        update();
+    }
+
+    void PaintWidget::paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        painter.drawImage(0, 0, *image);
+        Q_UNUSED(event);
+    }

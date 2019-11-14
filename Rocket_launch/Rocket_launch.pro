@@ -40,7 +40,8 @@ SOURCES += \
     matrix.cpp \
     transfor_matrix.cpp \
     paintingwidget.cpp \
-    triangle.cpp
+    triangle.cpp \
+    vector.cpp
 HEADERS += \
     fire.h \
         mainwindow.h \
@@ -57,7 +58,8 @@ HEADERS += \
     matrix.h \
     transfor_matrix.h \
     paintingwidget.h \
-    triangle.h
+    triangle.h \
+    vector.h
 
 FORMS += \
         mainwindow.ui
