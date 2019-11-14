@@ -145,7 +145,7 @@ void PaintWidget::drawLine3D(Point3D first, Point3D second)
 void PaintWidget::drawLaunchPad(Point3D point)
 {
     Cone cone;
-    cone.createCone(point, 40, 40, 50, 4, QColor(Qt::green));
+    cone.createCone(point, 300, 300, 50, 4, QColor(Qt::green));
     drawCone(cone);
 }
 
