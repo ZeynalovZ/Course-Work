@@ -445,21 +445,22 @@ void Cone::Rotatez(int angle_z, qreal _y, qreal _x)
 
 void Cone::MoveCone()
 {
-    for (int i = 0; i < this->firstCircle.size(); i++)
-    {
-        this->firstCircle[i].move(0, 0, 1);
-    }
+//    for (int i = 0; i < this->firstCircle.size(); i++)
+//    {
+//        this->firstCircle[i].move(0, 0, 1);
+//    }
 
-    for (int i = 0; i < this->secondCircle.size(); i++)
-    {
-        this->secondCircle[i].move(0, 0, 1);
+//    for (int i = 0; i < this->secondCircle.size(); i++)
+//    {
+//        this->secondCircle[i].move(0, 0, 1);
 
-    }
-    for (int i = 0; i < this->Edges.list.size(); i++)
+//    }
+    for (auto &triangle : Triangles)
     {
 
-        this->Edges.list[i].first.move(0, 0, 1);
-        this->Edges.list[i].second.move(0, 0, 1);
+        triangle.A.move(0, 0, 1);
+        triangle.B.move(0, 0, 1);
+        triangle.C.move(0, 0, 1);
 
     }
 }

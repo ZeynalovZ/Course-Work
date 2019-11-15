@@ -15,9 +15,12 @@
 #include "triangle.h"
 #include "edges.h"
 #include "vector.h"
+#include "fire.h"
 
 #define WIDTH  850
 #define HEIGHT  715
+
+
 
 struct BarycentricCoords
 {
@@ -33,7 +36,7 @@ struct DepthBuffer
     {
         for (int i = 0; i < WIDTH*HEIGHT; i++)
         {
-            zbuffer[i] = -1000;
+            zbuffer[i] = -100000;
         }
     }
 };
@@ -55,11 +58,14 @@ public:
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
     void clear();
-    void ComputeBarycentric(Point3D A, Point3D B, Point3D C);
+    void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P);
+    void makeFire();
     Camera _camera;
     std::vector<Triangle> trianglesOnImage;
     DepthBuffer ZBuffer;
     BarycentricCoords BarCoor;
+    QPainter *painter;
+    fire RocketFire;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
@@ -72,7 +78,7 @@ private:
     QColor borders_color;
     QColor fill_color;
     QColor bg_color;
-    QPainter *painter;
+
 
 
 

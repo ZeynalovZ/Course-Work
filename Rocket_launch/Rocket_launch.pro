@@ -24,7 +24,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    fire.cpp \
         main.cpp \
         mainwindow.cpp \
     basedrawer.cpp \
@@ -41,9 +40,9 @@ SOURCES += \
     transfor_matrix.cpp \
     paintingwidget.cpp \
     triangle.cpp \
-    vector.cpp
+    vector.cpp \
+    fire.cpp
 HEADERS += \
-    fire.h \
         mainwindow.h \
     basedrawer.h \
     controller.h \
@@ -59,7 +58,8 @@ HEADERS += \
     transfor_matrix.h \
     paintingwidget.h \
     triangle.h \
-    vector.h
+    vector.h \
+    fire.h
 
 FORMS += \
         mainwindow.ui

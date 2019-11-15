@@ -133,29 +133,35 @@ void MainWindow::render()
 {
 
     scene->clear();
-    /*
-    Point3D first(-400, 0, 0);
+
+
+    Point3D first(0, 0, 0);
     Point3D second(400, 0, 0);
+    scene->painter->setPen(QColor(Qt::red));
     scene->drawLine3D(first, second);
 
-    first.changeAll(0, -250, 0);
+    first.changeAll(0, 0, 0);
     second.changeAll(0, 250, 0);
+    scene->painter->setPen(QColor(Qt::blue));
     scene->drawLine3D(first, second);
 
-    first.changeAll(0, 0, 400);
-    second.changeAll(0, 0, -50);
+    first.changeAll(0, 0, 0);
+    second.changeAll(0, 0, 400);
+    scene->painter->setPen(QColor(Qt::green));
     scene->drawLine3D(first, second);
-    */
+
+    //scene->makeFire();
+
     Point3D point(0, 0, -25); // launchpad center
-    //scene->ZBuffer.fillbuffer();
+    scene->ZBuffer.fillbuffer();
     scene->drawLaunchPad(point);
     scene->drawCone(cone);
     scene->drawRocket(_rocket, cameraPosition);
-    Point3D p1(100, 200, 0);
-    Point3D p2(200, 200, 0);
-    Point3D p3(200, 400, 0);
+//    Point3D p1(100, 200, 0);
+//    Point3D p2(100, 100, 0);
+//    Point3D p3(200, 150, 0);
 
-    scene->ComputeBarycentric(p1, p2, p3);
+//    scene->ComputeBarycentric(p1, p2, p3);
     //qDebug() << scene->trianglesOnImage.size();
     //scene->fillObject(cone);
 
