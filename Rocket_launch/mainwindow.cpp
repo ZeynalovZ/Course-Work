@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new PaintWidget(this);
 
     // Создадим ракету передав в нее центр основания ракеты и ее масштаб
-    Point3D rocketCenter(0, 0, 0);
+    Point3D rocketCenter(50, 0, 0);
     _rocket.createRocket(rocketCenter, SCALE);
     Point3D coneCenter(150, 150, 50);
     // Отдельный цилиндр рядом с ракетой
@@ -135,20 +135,20 @@ void MainWindow::render()
     scene->clear();
 
 
-    Point3D first(0, 0, 0);
-    Point3D second(400, 0, 0);
-    scene->painter->setPen(QColor(Qt::red));
-    scene->drawLine3D(first, second);
+//    Point3D first(0, 0, 0);
+//    Point3D second(400, 0, 0);
+//    scene->painter->setPen(QColor(Qt::red));
+//    scene->drawLine3D(first, second);
 
-    first.changeAll(0, 0, 0);
-    second.changeAll(0, 250, 0);
-    scene->painter->setPen(QColor(Qt::blue));
-    scene->drawLine3D(first, second);
+//    first.changeAll(0, 0, 0);
+//    second.changeAll(0, 250, 0);
+//    scene->painter->setPen(QColor(Qt::blue));
+//    scene->drawLine3D(first, second);
 
-    first.changeAll(0, 0, 0);
-    second.changeAll(0, 0, 400);
-    scene->painter->setPen(QColor(Qt::green));
-    scene->drawLine3D(first, second);
+//    first.changeAll(0, 0, 0);
+//    second.changeAll(0, 0, 400);
+//    scene->painter->setPen(QColor(Qt::green));
+//    scene->drawLine3D(first, second);
 
     //scene->makeFire();
 
@@ -157,11 +157,11 @@ void MainWindow::render()
     scene->drawLaunchPad(point);
     scene->drawCone(cone);
     scene->drawRocket(_rocket, cameraPosition);
-//    Point3D p1(100, 200, 0);
-//    Point3D p2(100, 100, 0);
-//    Point3D p3(200, 150, 0);
+//    Point3D p1(427, 357, 0);
+//    Point3D p2(423, 374, 0);
+//    Point3D p3(427, 357, 0);
 
-//    scene->ComputeBarycentric(p1, p2, p3);
+//    scene->fillObject(p1, p2, p3);
     //qDebug() << scene->trianglesOnImage.size();
     //scene->fillObject(cone);
 

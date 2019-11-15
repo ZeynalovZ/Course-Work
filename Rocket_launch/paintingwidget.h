@@ -58,7 +58,7 @@ public:
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
     void clear();
-    void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P);
+    void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square);
     void makeFire();
     Camera _camera;
     std::vector<Triangle> trianglesOnImage;

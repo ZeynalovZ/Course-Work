@@ -269,14 +269,21 @@ void Cone::createConnectedLines()
         Triangle tr(A, B, C);
         Triangles.push_back(tr);
 
-        for (int i = 0; i < secondCircle.size() - 2; i++)
+        //qDebug() << secondCircle.size() << "size";
+        for (int i = 1; i < secondCircle.size() - 2; i++)
         {
             A = secondCircle[0];
-            B = secondCircle[i + 1];
-            C = secondCircle[i + 2];
+            B = secondCircle[i];
+            C = secondCircle[i + 1];
             Triangle tr(A, B, C);
             Triangles.push_back(tr);
         }
+
+        A = secondCircle[0];
+        B = secondCircle[secondCircle.size() - 2];
+        C = secondCircle[secondCircle.size() - 1];
+        Triangle tr1(A, B, C);
+        Triangles.push_back(tr1);
     }
 
     // конус с вершиной внизу
@@ -342,6 +349,7 @@ void Cone::createConnectedLines()
             Triangles.push_back(tr);
         }
 
+
     }
 
 
@@ -394,8 +402,10 @@ void Cone::createConnectedLines()
                 Triangles.push_back(tr1);
             }
         }
+
     }
     */
+
 
 }
 // сделать вращение для каждой точки !!! по каждой координате и в цикле построения окружности выводить какждую точку через поворот
