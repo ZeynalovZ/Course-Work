@@ -31,12 +31,12 @@ struct BarycentricCoords
 
 struct DepthBuffer
 {
-    int *zbuffer = new int[WIDTH*HEIGHT];
+    int *zbuffer = new int[WIDTH * HEIGHT];
     void fillbuffer()
     {
-        for (int i = 0; i < WIDTH*HEIGHT; i++)
+        for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
-            zbuffer[i] = -100000;
+            zbuffer[i] = -10000;
         }
     }
 };

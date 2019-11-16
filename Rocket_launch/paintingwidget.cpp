@@ -40,8 +40,8 @@ void PaintWidget::drawCone(Cone &_cone)
         Point3D tmp2 = triangle.B;
         Point3D tmp3 = triangle.C;
 
-//        qDebug() << tmp1.x() << tmp2.x() << tmp3.x() << "x";
-//        qDebug() << tmp1.y() << tmp2.y() << tmp3.y() << "y";
+        //        qDebug() << tmp1.x() << tmp2.x() << tmp3.x() << "x";
+        //        qDebug() << tmp1.y() << tmp2.y() << tmp3.y() << "y";
         tmp1.rotateX(angleX);
         tmp2.rotateX(angleX);
         tmp3.rotateX(angleX);
@@ -57,13 +57,13 @@ void PaintWidget::drawCone(Cone &_cone)
         fillObject(tmp1, tmp2, tmp3);
 
         //ComputeBarycentric(tmp1, tmp2, tmp3);
-//        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-//                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
+        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
+        //                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
 
-//        painter->drawLine(tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE,
-//                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
-//        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-//                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
+        //        painter->drawLine(tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE,
+        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
+        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
+        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
         //Triangle triangleOnImageTmp(tmp1, tmp2, tmp3);
         //trianglesOnImage.push_back(triangleOnImageTmp);
 
@@ -268,12 +268,12 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     //qDebug() << xmin << xmax << ymin << ymax << "BB";
     Point3D P;
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
-//    if (square < EPS && square > -EPS)
-//    {
-//        qDebug() << square;
-//        qDebug() << A.x() - X_SIZE << B.x() - X_SIZE << C.x() - X_SIZE << "x";
-//        qDebug() << A.y() - Y_SIZE << B.y() - Y_SIZE << C.y() - Y_SIZE << "y";
-//    }
+    //    if (square < EPS && square > -EPS)
+    //    {
+    //        qDebug() << square;
+    //        qDebug() << A.x() - X_SIZE << B.x() - X_SIZE << C.x() - X_SIZE << "x";
+    //        qDebug() << A.y() - Y_SIZE << B.y() - Y_SIZE << C.y() - Y_SIZE << "y";
+    //    }
     for (int y = int(ymin); y <= int(ymax); y++)
     {
         for (int x = int(xmin); x <= int(xmax); x++)
