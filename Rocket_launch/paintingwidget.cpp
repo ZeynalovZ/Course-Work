@@ -8,20 +8,35 @@
 #define Y_SIZE  715 / 2
 #define EPS 0.00001
 
+void printPoints1(Point3D tmp1, Point3D tmp2, Point3D tmp3)
+{
+    qDebug() << tmp1.x() << tmp1.y() << tmp1.z();
+    qDebug() << tmp2.x() << tmp2.y() << tmp2.z();
+    qDebug() << tmp3.x() << tmp3.y() << tmp3.z();
+    qDebug() << "==============================";
+}
 
 PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
 {
     widget_width = 850;
     widget_height = 715;
-    bg_color = Qt::white;
+    bg_color = Qt::black;
     borders_color = Qt::black;
     fill_color = Qt::blue;
+    lightColor = Qt::yellow;
     image = new QImage(widget_width, widget_height, QImage::Format_RGB32);
     image->fill(bg_color);
     setGeometry(20, 20, widget_width, widget_height);
     painter = new QPainter(image);
-
+    //_visibleCamera.setCameraPos(Point3D(0, 0, -1000));
+    //_visibleCamera.changeAll(0, 0, 1000);
     //fillAutoZBuffer(ZBuffer);
+    Vector V1(1, 1, 1);
+    Vector V2(4, 6, 11);
+    Point3D P(0, 0, -1000);
+    LookAt camera(P, V1, V2);
+    printTransformedMatrix(camera);
+    lightPoint = Point3D(0, 0, 1000);
 }
 
 void change(Point3D &point)
@@ -29,19 +44,25 @@ void change(Point3D &point)
     point.changeAll(point.x() + X_SIZE, point.y() + Y_SIZE, point.z());
 }
 
+
 void PaintWidget::drawCone(Cone &_cone)
 {
     int angleX = _cone.currentAngleX;
     int angleY = _cone.currentAngleY;
     painter->setRenderHint(QPainter::Antialiasing, true);
+    //changeCameraPos(_visibleCamera);
+    //Point3D camPos = _visibleCamera.getPosition();
+    //qDebug() << camPos.x() << camPos.y() << camPos.z() << _visibleCamera.getXAngle() << _visibleCamera.getYAngle() << _visibleCamera.getZAngle();
+    //qDebug() << _cone.Triangles.size() << " size";
+    //qDebug() << V.x << V.y << V.z << "is result";
     for (auto &triangle : _cone.Triangles)
     {
         Point3D tmp1 = triangle.A;
         Point3D tmp2 = triangle.B;
         Point3D tmp3 = triangle.C;
 
-        //        qDebug() << tmp1.x() << tmp2.x() << tmp3.x() << "x";
-        //        qDebug() << tmp1.y() << tmp2.y() << tmp3.y() << "y";
+        //printPoints1(tmp1, tmp2, tmp3);
+
         tmp1.rotateX(angleX);
         tmp2.rotateX(angleX);
         tmp3.rotateX(angleX);
@@ -50,52 +71,36 @@ void PaintWidget::drawCone(Cone &_cone)
         tmp2.rotateY(angleY);
         tmp3.rotateY(angleY);
 
+        rotateCamera(tmp1);
+        rotateCamera(tmp2);
+        rotateCamera(tmp3);
+
         PerspectiveProjection(tmp1);
         PerspectiveProjection(tmp2);
         PerspectiveProjection(tmp3);
-        painter->setPen(_cone.ObjectColor);
-        fillObject(tmp1, tmp2, tmp3);
 
-        //ComputeBarycentric(tmp1, tmp2, tmp3);
-        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-        //                          tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE);
-
-        //        painter->drawLine(tmp2.x() + X_SIZE, tmp2.y() + Y_SIZE,
-        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
-        //        painter->drawLine(tmp1.x() + X_SIZE, tmp1.y() + Y_SIZE,
-        //                          tmp3.x() + X_SIZE, tmp3.y() + Y_SIZE);
-        //Triangle triangleOnImageTmp(tmp1, tmp2, tmp3);
-        //trianglesOnImage.push_back(triangleOnImageTmp);
-
-        /*
-        triangle.A.rotateX(angleX);
-        triangle.B.rotateX(angleX);
-        triangle.C.rotateX(angleX);
-
-        triangle.A.rotateY(angleY);
-        triangle.B.rotateY(angleY);
-        triangle.C.rotateY(angleY);
-
-        PerspectiveProjection(triangle.A);
-        PerspectiveProjection(triangle.B);
-        PerspectiveProjection(triangle.C);
-
-        painter->drawLine(triangle.A.x() + X_SIZE, triangle.A.y() + Y_SIZE,
-                          triangle.B.x() + X_SIZE, triangle.B.y() + Y_SIZE);
-
-        painter->drawLine(triangle.B.x() + X_SIZE, triangle.B.y() + Y_SIZE,
-                          triangle.C.x() + X_SIZE, triangle.C.y() + Y_SIZE);
-
-        painter->drawLine(triangle.C.x() + X_SIZE, triangle.C.y() + Y_SIZE,
-                          triangle.A.x() + X_SIZE, triangle.A.y() + Y_SIZE);
-        */
+        QColor ambient = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor);
+        qDebug() << ambient << "ambient";
+        // Перед растеризацией, сделаем проверку на лицевые грани
+        bool triangleIsVisible = isTriangleVisible(tmp1, tmp2, tmp3);
+        //bool triangleIsVisible = true;
+        if (triangleIsVisible == true)
+        {
+            painter->setPen(ambient);
+            drawTriangleEdge(tmp1, tmp2, tmp3);
+            fillObject(tmp1, tmp2, tmp3);
+        }
+        else
+        {
+            // do nothing
+        }
     }
+
     update();
 }
 
-void PaintWidget::drawRocket(rocket &_rocket, Point3D CameraPosition)
+void PaintWidget::drawRocket(rocket &_rocket)
 {
-    _camera.setPosition(CameraPosition);
 
 
     for (int i = 0; i < _rocket.modules.size(); i++)
@@ -110,8 +115,10 @@ void PaintWidget::drawRocket(rocket &_rocket, Point3D CameraPosition)
 
 void PaintWidget::drawLine3D(Point3D first, Point3D second)
 {
-    PerspectiveProjection(first);
-    PerspectiveProjection(second);
+    //PerspectiveProjection(first);
+    rotateCamera(first);
+    rotateCamera(second);
+    //PerspectiveProjection(second);
     painter->drawLine(first.x() + X_SIZE, first.y() + Y_SIZE, second.x() + X_SIZE, second.y() + Y_SIZE);
     update();
 }
@@ -119,31 +126,82 @@ void PaintWidget::drawLine3D(Point3D first, Point3D second)
 void PaintWidget::drawLaunchPad(Point3D point)
 {
     Cone cone;
-    cone.createCone(point, 100, 100, 50, 4, QColor(Qt::darkCyan));
+    cone.createCone(point, 300, 300, 50, 5, QColor(Qt::white));
     drawCone(cone);
+}
+
+void PaintWidget::drawTriangleEdge(Point3D a, Point3D b, Point3D c)
+{
+    painter->drawLine(a.x() + X_SIZE, a.y() + Y_SIZE, b.x() + X_SIZE, b.y() + Y_SIZE);
+    painter->drawLine(b.x() + X_SIZE, b.y() + Y_SIZE, c.x() + X_SIZE, c.y() + Y_SIZE);
+    painter->drawLine(c.x() + X_SIZE, c.y() + Y_SIZE, a.x() + X_SIZE, a.y() + Y_SIZE);
+}
+
+void PaintWidget::rotateCamera(Point3D &point)
+{
+    auto cam_pos = _camera.getPosition();
+    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(-cam_pos.x(), -cam_pos.y(), 0));
+    point.transform(transform_matrix);
+    transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
+    point.transform(transform_matrix);
+    transform_matrix.reset(new RotateOyMatrix(_camera.getYAngle() * M_PI / TO_RAD_180));
+    point.transform(transform_matrix);
+    transform_matrix.reset(new RotateOzMatrix(_camera.getZAngle() * M_PI / TO_RAD_180));
+    point.transform(transform_matrix);
+
 }
 
 void PaintWidget::PerspectiveProjection(Point3D &point)
 {
     auto cam_pos = _camera.getPosition();
-    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(-cam_pos.x(), -cam_pos.y(), 0));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-
     double eps = 1e-10;
-    double znam = point.z() + cam_pos.z();
+    double znam = 1 - point.z() / cam_pos.z();
+    //qDebug() << cam_pos.x() << cam_pos.y() << cam_pos.z() << "cam pos";
     if (znam < eps && znam > -eps) {
         znam = eps;
     }
-    double distCoef = cam_pos.z() / znam;
-    point.setX(point.x() * distCoef);
-    point.setY(point.y() * distCoef);
+    //double distCoef = cam_pos.z() / znam;
+    point.setX(point.x() / znam);
+    point.setY(point.y() / znam);
 }
+
+void PaintWidget::changeCameraPos(Point3D &cameraView)
+{
+    Point3D cam_pos = _visibleCamera.getPosition();
+    //qDebug() << cam_pos.x() << cam_pos.y() << cam_pos.z() << "cam pos";
+    //qDebug() << _camera.getXAngle() << _camera.getYAngle() << _camera.getZAngle() << "cam angles";
+
+    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(0, 0, 0));
+    cameraView.transform(transform_matrix);
+    transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
+    cameraView.transform(transform_matrix);
+    transform_matrix.reset(new RotateOyMatrix(_camera.getYAngle() * M_PI / TO_RAD_180));
+    cameraView.transform(transform_matrix);
+    transform_matrix.reset(new RotateOzMatrix(_camera.getZAngle() * M_PI / TO_RAD_180));
+    cameraView.transform(transform_matrix);
+
+//    cameraView.setPosition(cam_pos);
+//    cameraView.setXAngle(_camera.getXAngle());
+//    cameraView.setYAngle(_camera.getYAngle());
+//    cameraView.setZAngle(_camera.getZAngle());
+
+}
+
+void PaintWidget::changeVisCamera(double x, double y, double z)
+{
+//    qDebug() << _visibleCamera.x() << _visibleCamera.y() << _visibleCamera.z();
+//    std::shared_ptr<Matrix> transform_matrix((new RotateOxMatrix(-x * M_PI / TO_RAD_180)));
+//    _visibleCamera.transform(transform_matrix);
+//    qDebug() << _visibleCamera.x() << _visibleCamera.y() << _visibleCamera.z() << " ==== 1";
+//    transform_matrix.reset(new RotateOyMatrix(-y * M_PI / TO_RAD_180));
+//    _visibleCamera.transform(transform_matrix);
+//    qDebug() << _visibleCamera.x() << _visibleCamera.y() << _visibleCamera.z() << " ==== 2";
+//    transform_matrix.reset(new RotateOzMatrix(-z * M_PI / TO_RAD_180));
+//    _visibleCamera.transform(transform_matrix);
+//    qDebug() << _visibleCamera.x() << _visibleCamera.y() << _visibleCamera.z() << " ==== 3";
+
+}
+
 
 void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
 {
@@ -255,9 +313,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     double y1 = A.y();
     double y2 = B.y();
     double y3 = C.y();
-    A.setZ(1 / A.z());
-    B.setZ(1 / B.z());
-    C.setZ(1 / C.z());
+
 
     double xmax, xmin, ymax, ymin, z;
     xmax = getMaxFor3(x1, x2, x3);
@@ -268,12 +324,15 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     //qDebug() << xmin << xmax << ymin << ymax << "BB";
     Point3D P;
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
-    //    if (square < EPS && square > -EPS)
-    //    {
-    //        qDebug() << square;
-    //        qDebug() << A.x() - X_SIZE << B.x() - X_SIZE << C.x() - X_SIZE << "x";
-    //        qDebug() << A.y() - Y_SIZE << B.y() - Y_SIZE << C.y() - Y_SIZE << "y";
-    //    }
+//    if (square < EPS && square > -EPS)
+//    {
+//        qDebug() << square;
+//        qDebug() << A.x() - X_SIZE << B.x() - X_SIZE << C.x() - X_SIZE << "x";
+//        qDebug() << A.y() - Y_SIZE << B.y() - Y_SIZE << C.y() - Y_SIZE << "y";
+//    }
+    A.setZ(1. / A.z());
+    B.setZ(1. / B.z());
+    C.setZ(1. / C.z());
     for (int y = int(ymin); y <= int(ymax); y++)
     {
         for (int x = int(xmin); x <= int(xmax); x++)
@@ -284,9 +343,12 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
             if (BarCoor.b1 >= 0 && BarCoor.b1 <= 1 && BarCoor.b2 >= 0 && BarCoor.b2 <= 1 &&
                     BarCoor.b3 >= 0 && BarCoor.b3 <=1)
             {
+
                 z = 1 / (BarCoor.b1 * A.z() + BarCoor.b2 * B.z() + BarCoor.b3 * C.z());
+                //qDebug() << A.z() << B.z() << C.z() << BarCoor.b1 << BarCoor.b2 << BarCoor.b3 << z << "====";
                 if (x + y * WIDTH >= 0 && x + y * WIDTH < WIDTH * HEIGHT)
                 {
+
                     if (z > ZBuffer.zbuffer[x + y * WIDTH])
                     {
                         ZBuffer.zbuffer[x + y * WIDTH] = z;
@@ -308,6 +370,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
 
     painter->setPen(QColor(Qt::black));
 }
+
 
 
 
@@ -334,8 +397,7 @@ void sortPoints(Point3D &A, Point3D &B, Point3D &C)
 
 void PaintWidget::ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square)
 {
-    // вынести вычисление площади, а тут добавить аргумент функции
-    if (square > EPS || square < EPS)
+    if (square > EPS || square < -EPS)
     {
         BarCoor.b1 = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
         BarCoor.b1 /= square;
@@ -356,6 +418,59 @@ void PaintWidget::makeFire()
     RocketFire.update();
     update();
     //RocketFire.update();
+
+}
+
+bool PaintWidget::isTriangleVisible(Point3D A, Point3D B, Point3D C)
+{
+    Vector V1(A, B);
+    Vector V2(B, C);
+    Vector Vn = crossProduct(V1, V2);
+    Vn.normalize();
+
+    Point3D CameraPos = _camera.getPosition();
+    //changeCameraPos(CameraPos);
+    // позиция камеры
+    //qDebug() << CameraPos.x() << CameraPos.y() << CameraPos.z();
+    Point3D Null(0, 0, 0);
+    Vector CameraVector(Null, CameraPos);
+    CameraVector.normalize();
+    //qDebug() << CameraVector.x << CameraVector.y << CameraVector.z;
+
+    double result = crossProductScalar(CameraVector, Vn);
+    //qDebug() << result << "result of scalar";
+    if (result <= 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+QColor PaintWidget::ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor)
+{
+    Vector V1(A, B);
+    Vector V2(B, C);
+    Vector Vn = crossProduct(V1, V2);
+    Vn.normalize();
+
+//    qDebug() << Vn.x << Vn.y << Vn.z << "Vn";
+//    qDebug() << lightPoint.x() << lightPoint.y() << lightPoint.z() << "lightpos";
+
+    Point3D Null(0, 0, 0);
+    Vector lightVector(lightPoint, Null);
+    lightVector.normalize();
+    //qDebug() << CameraVector.x << CameraVector.y << CameraVector.z;
+
+    double intensity = crossProductScalar(lightVector, Vn);
+//    qDebug() << intensity << "intensity";
+    QColor tmp = objColor;
+    tmp.setAlphaF(intensity);
+    return  tmp;
+
 
 }
 

@@ -3,7 +3,7 @@
 
 Camera::Camera(): _x_angle(0), _y_angle(0), _z_angle(0)
 {
-    _position = Point3D(0, 0, 300);
+    _position = Point3D(0, 0, -1000);
 }
 
 const Point3D &Camera::getPosition() const
@@ -38,6 +38,13 @@ double Camera::getZAngle() const
 void Camera::setZAngle(double _z_angle)
 {
     Camera::_z_angle = _z_angle;
+}
+
+void Camera::setCameraPos(Point3D p)
+{
+    this->_position.setX(p.x());
+    this->_position.setY(p.y());
+    this->_position.setZ(p.z());
 }
 
 void Camera::transformCamera(const std::shared_ptr<Matrix> matrix)

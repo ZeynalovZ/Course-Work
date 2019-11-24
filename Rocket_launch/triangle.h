@@ -2,6 +2,7 @@
 #define TRIANGLE_H
 
 #include "point3d.h"
+#include "vector.h"
 
 class Triangle
 {
@@ -11,10 +12,12 @@ public:
     {
 
     }
+    Vector getTriangleNormal();
 
     Point3D A;
     Point3D B;
     Point3D C;
+    Vector normal;
 
 };
 

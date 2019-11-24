@@ -16,6 +16,7 @@ public:
     void setYAngle(double y_angle);
     double getZAngle() const;
     void setZAngle(double z_angle);
+    void setCameraPos(Point3D p);
 
     void transformCamera(const std::shared_ptr<Matrix> matrix);
 //    void draw(std::shared_ptr<BaseDrawManager> drawer) override;

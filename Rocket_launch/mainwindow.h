@@ -44,6 +44,7 @@ private:
     Ui::MainWindow *ui;
     rocket _rocket;
     Point3D cameraPosition;
+    Point3D cameraVisPosition;
     QPainter *painter;
     PaintWidget *scene;
     //Drawer *drawer;

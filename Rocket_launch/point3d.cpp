@@ -21,7 +21,7 @@ void printMatrix(double matrix[][4], int row_count, int column_count)
 
 int multiplicateMatrix(double src1[][4], double src2[][4], int rc1, int cc1, int rc2, int cc2, Point3D &tmp)
 {
-    double tmpMtr[1][4] = {0.};
+    double tmpMtr[1][4] = {{0.}};
     if (cc1 != rc2)
     {
         return -1;

@@ -31,7 +31,7 @@ struct BarycentricCoords
 
 struct DepthBuffer
 {
-    int *zbuffer = new int[WIDTH * HEIGHT];
+    double *zbuffer = new double[WIDTH * HEIGHT];
     void fillbuffer()
     {
         for (int i = 0; i < WIDTH * HEIGHT; i++)
@@ -40,6 +40,7 @@ struct DepthBuffer
         }
     }
 };
+
 
 
 class PaintWidget : public QWidget
@@ -51,21 +52,31 @@ public:
     explicit PaintWidget(QWidget *parent = nullptr);
 
     void drawCone(Cone &_cone);
-    void drawRocket(rocket &_rocket, Point3D CameraPosition);
+    void drawRocket(rocket &_rocket);
     void drawLine3D(Point3D first, Point3D second);
     void drawLaunchPad(Point3D point);
+    void drawTriangleEdge(Point3D a, Point3D b, Point3D c);
+
+    void rotateCamera(Point3D &point);
     void PerspectiveProjection(Point3D &point);
+
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
+    void changeCameraPos(Point3D &cameraView);
+    void changeVisCamera(double x, double y, double z);
     void clear();
     void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square);
     void makeFire();
+    bool isTriangleVisible(Point3D A, Point3D B, Point3D C);
+    QColor ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor);
     Camera _camera;
+    Camera _visibleCamera;
     std::vector<Triangle> trianglesOnImage;
     DepthBuffer ZBuffer;
     BarycentricCoords BarCoor;
     QPainter *painter;
     fire RocketFire;
+    Point3D lightPoint;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
@@ -78,10 +89,12 @@ private:
     QColor borders_color;
     QColor fill_color;
     QColor bg_color;
+    QColor lightColor;
 
 
 
 
 };
+
 
 #endif // DRAWWIDGET_H

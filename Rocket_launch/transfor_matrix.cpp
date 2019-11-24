@@ -1,5 +1,5 @@
 #include "transfor_matrix.h"
-
+#include <QDebug>
 MoveMatrix::MoveMatrix(int x, int y, int z)
 {
     _data[0][0] = 1;
@@ -47,4 +47,68 @@ RotateOzMatrix::RotateOzMatrix(double angle)
     _data[1][1] = cos(angle);
     _data[2][2] = 1;
     _data[3][3] = 1;
+}
+
+SimplePos::SimplePos(Point3D Position)
+{
+    _data[0][0] = 1.;
+    _data[1][1] = 1.;
+    _data[2][2] = 1.;
+    _data[3][3] = 1.;
+
+    _data[0][3] = -Position.x();
+    _data[1][3] = -Position.y();
+    _data[2][3] = -Position.z();
+}
+
+LookAt::LookAt(Point3D _camPos, Vector _camFront, Vector _camUp)
+{
+    this->fillMatrixWZeros();
+    Vector _camRight = crossProduct(_camFront, _camUp);
+    _data[0][0] = _camRight.x;
+    _data[0][1] = _camRight.y;
+    _data[0][2] = _camRight.z;
+
+    _data[1][0] = _camUp.x;
+    _data[1][1] = _camUp.y;
+    _data[1][2] = _camUp.z;
+
+    _data[2][0] = _camFront.x;
+    _data[2][1] = _camFront.y;
+    _data[2][2] = _camFront.z;
+
+
+    SimplePos *mtr = new SimplePos(_camPos);
+    multiply(*mtr);
+}
+
+void LookAt::multiply(SimplePos &mtr)
+{
+    Matrix tmp;
+    for(int i = 0;i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            for(int k = 0; k < 4; k++)
+            {
+                tmp.set(i, j, tmp.get(i, j) + (this->get(i, k) * mtr.get(k, j)));
+            }
+        }
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            this->set(i,j, tmp.get(i, j));
+        }
+    }
+}
+
+void printTransformedMatrix(Matrix mtr)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        qDebug() << mtr.get(i, 0) << mtr.get(i, 1) << mtr.get(i, 2) << mtr.get(i, 3) ;
+    }
 }

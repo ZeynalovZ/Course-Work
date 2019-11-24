@@ -216,6 +216,7 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
 void Cone::CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius, int n)
 {
     //draw_brezenham_circle(_center.x(), _center.y(), radius, CirclePoints, _center.z());
+    //qDebug() << _center.x() << _center.y() << _center.z();
     createRightPolygon(_center.x(), _center.y(), _center.z(), radius, CirclePoints, n);
 }
 
@@ -224,16 +225,17 @@ void Cone::createRightPolygon(double xc, double yc, double zc, double R,
 {
     Point3D point;
     double x, y, z = zc;
-    if (R > 0 && n > 0)
+    if (R > 0 && n > 2)
     {
         double angle = double(360.0 / double(n));
         int i = 0;
         double curAngle = 0;
-        while (i < n + 1)
+        while (i < n)
         {
             x = xc + int(round(cos(curAngle / 180 * M_PI) * R));
             y = yc - int(round(sin(curAngle / 180 * M_PI) * R));
             point.changeAll(x, y, z);
+            //qDebug() << point.x() << point.y() << point.z() << "points";
             i++;
             curAngle += angle;
             CirclePoints.push_back(point);
@@ -312,6 +314,7 @@ void Cone::createConnectedLines()
     }
 
     // обычный конус
+    //qDebug() << firstCircle.size() << secondCircle.size() << "circles";
     if (radius1 != 0 && radius2 != 0)
     {
         for (int i = 0; i < firstCircle.size() - 1; i++)
@@ -321,15 +324,26 @@ void Cone::createConnectedLines()
             C = secondCircle[i + 1];
             Triangle tr(A, B, C);
             Triangles.push_back(tr);
-        }
-        for (int i = 1; i < secondCircle.size(); i++)
-        {
-            A = secondCircle[i];
-            B = firstCircle[i];
-            C = firstCircle[i - 1];
+
+            A = secondCircle[i + 1];
+            B = firstCircle[i + 1];
+            C = firstCircle[i];
             Triangle tr1(A, B, C);
             Triangles.push_back(tr1);
         }
+        int len1 = firstCircle.size() - 1;
+        int len2 = secondCircle.size() - 1;
+        A = firstCircle[len1];
+        B = secondCircle[len1];
+        C = secondCircle[0];
+        Triangle tr(A, B, C);
+        Triangles.push_back(tr);
+
+        A = secondCircle[0];
+        B = firstCircle[0];
+        C = firstCircle[len2];
+        Triangle tr1(A, B, C);
+        Triangles.push_back(tr1);
 
         for (int i = 0; i < firstCircle.size() - 2; i++)
         {
@@ -340,11 +354,11 @@ void Cone::createConnectedLines()
             Triangles.push_back(tr);
         }
 
-        for (int i = 0; i < secondCircle.size() - 2; i++)
+        for (int i = secondCircle.size() - 1; i > 1; i--)
         {
-            A = secondCircle[0];
-            B = secondCircle[i + 1];
-            C = secondCircle[i + 2];
+            A = secondCircle[secondCircle.size() - 1];
+            B = secondCircle[i - 1];
+            C = secondCircle[i - 2];
             Triangle tr(A, B, C);
             Triangles.push_back(tr);
         }

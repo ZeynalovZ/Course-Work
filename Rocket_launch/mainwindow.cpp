@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     cone.createCone(coneCenter, 30, 30, 100, 5, QColor(Qt::red));
     cameraPosition.setX(0);
     cameraPosition.setY(0);
-    cameraPosition.setZ(-1000);
+    cameraPosition.setZ(1000);
+    cameraVisPosition.changeAll(0, 0, 1000);
 
     // todo
 
@@ -48,40 +49,50 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-
+    // это для точки, представляющей точку
+    int CameraVisAngleX = 0;
+    int CameraVisAngleY = 0;
+    int CameraVisAngleZ = 0;
     if (event->key() == Qt::Key_S)
     {
         CameraAngleX -= 5;
+        CameraVisAngleX = -5;
         //cameraPosition.setZ(cameraPosition.z() + 5);
     }
     else if (event->key() == Qt::Key_D)
     {
         CameraAngleY += 5;
+        CameraVisAngleX = 5;
         //cameraPosition.setX(cameraPosition.x() + 5);
     }
     else if (event->key() == Qt::Key_A)
     {
         CameraAngleY -= 5;
+        CameraVisAngleY = -5;
         //cameraPosition.setX(cameraPosition.x() - 5);
     }
     else if (event->key() == Qt::Key_W)
     {
         CameraAngleX += 5;
+        CameraVisAngleY = 5;
         //cameraPosition.setZ(cameraPosition.z() - 5);
     }
     else if (event->key() == Qt::Key_E)
     {
         CameraAngleZ += 5;
+        CameraVisAngleZ = 5;
         //cameraPosition.setY(cameraPosition.y() + 5);
     }
     else if (event->key() == Qt::Key_Z)
     {
         CameraAngleZ -= 5;
+        CameraVisAngleZ = -5;
         //cameraPosition.setY(cameraPosition.y() - 5);
     }
     else if (event->key() == Qt::Key_Q)
     {
         cameraPosition.setX(cameraPosition.x() + 5);
+        cameraVisPosition.setX(cameraVisPosition.x() + 5);
         //cameraPosition.setY(cameraPosition.y() + 5);
         //cameraPosition.setZ(cameraPosition.z() + 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
@@ -89,6 +100,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_C)
     {
         cameraPosition.setX(cameraPosition.x() - 5);
+        cameraVisPosition.setX(cameraVisPosition.x() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
         //cameraPosition.setZ(cameraPosition.z() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
@@ -96,6 +108,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Y)
     {
         cameraPosition.setZ(cameraPosition.z() - 5);
+        cameraVisPosition.setZ(cameraVisPosition.z() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
         //cameraPosition.setZ(cameraPosition.z() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
@@ -103,6 +116,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_H)
     {
         cameraPosition.setZ(cameraPosition.z() + 5);
+        cameraVisPosition.setZ(cameraVisPosition.z() + 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
         //cameraPosition.setZ(cameraPosition.z() - 5);
         //cameraPosition.setY(cameraPosition.y() - 5);
@@ -124,6 +138,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     ui->AngleInfo->setText("Angle X: " + str0 + "\n" + "Angle Y: " + str1 + "\n" + "Angle Z: " + str2 + "\n" +
                            "camera Position is " + str3 + "," + str4 + "," + str5);
     scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
+    //qDebug() << CameraVisAngleX;
+    //scene->changeVisCamera(CameraVisAngleX, CameraVisAngleY, CameraVisAngleZ);
     render();
 
 
@@ -135,28 +151,40 @@ void MainWindow::render()
     scene->clear();
 
 
-//    Point3D first(0, 0, 0);
-//    Point3D second(400, 0, 0);
-//    scene->painter->setPen(QColor(Qt::red));
-//    scene->drawLine3D(first, second);
+    Point3D first(0, 0, 0);
+    Point3D second(400, 0, 0);
+    scene->painter->setPen(QColor(Qt::red));
+    scene->drawLine3D(first, second);
 
-//    first.changeAll(0, 0, 0);
-//    second.changeAll(0, 250, 0);
-//    scene->painter->setPen(QColor(Qt::blue));
-//    scene->drawLine3D(first, second);
+    first.changeAll(0, 0, 0);
+    second.changeAll(0, 250, 0);
+    scene->painter->setPen(QColor(Qt::blue));
+    scene->drawLine3D(first, second);
 
+    first.changeAll(0, 0, 0);
+    second.changeAll(0, 0, 400);
+    scene->painter->setPen(QColor(Qt::yellow));
+    scene->drawLine3D(first, second);
+
+//    Point3D cam_pos = scene->_camera.getPosition();
+//    scene->changeCameraPos(cam_pos);
+//    scene->_visibleCamera.setPosition(cam_pos);
 //    first.changeAll(0, 0, 0);
-//    second.changeAll(0, 0, 400);
-//    scene->painter->setPen(QColor(Qt::green));
+//    //qDebug() << cam_pos.x() << cam_pos.y() << cam_pos.z() << "hi";
+//    second.changeAll(cam_pos.x(), cam_pos.y(), cam_pos.z());
+//    scene->painter->setPen(QColor(Qt::black));
 //    scene->drawLine3D(first, second);
 
     //scene->makeFire();
 
+
     Point3D point(0, 0, -25); // launchpad center
+    scene->_camera.setPosition(cameraPosition);
+    //sqDebug() << scene->_visibleCamera.x() << scene->_visibleCamera.y() << scene->_visibleCamera.z() << "dots";
     scene->ZBuffer.fillbuffer();
     scene->drawLaunchPad(point);
     scene->drawCone(cone);
-    scene->drawRocket(_rocket, cameraPosition);
+    scene->drawRocket(_rocket);
 //    Point3D p1(427, 357, 0);
 //    Point3D p2(423, 374, 0);
 //    Point3D p3(427, 357, 0);
