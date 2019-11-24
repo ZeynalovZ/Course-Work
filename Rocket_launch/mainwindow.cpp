@@ -151,20 +151,7 @@ void MainWindow::render()
     scene->clear();
 
 
-    Point3D first(0, 0, 0);
-    Point3D second(400, 0, 0);
-    scene->painter->setPen(QColor(Qt::red));
-    scene->drawLine3D(first, second);
 
-    first.changeAll(0, 0, 0);
-    second.changeAll(0, 250, 0);
-    scene->painter->setPen(QColor(Qt::blue));
-    scene->drawLine3D(first, second);
-
-    first.changeAll(0, 0, 0);
-    second.changeAll(0, 0, 400);
-    scene->painter->setPen(QColor(Qt::yellow));
-    scene->drawLine3D(first, second);
 
 //    Point3D cam_pos = scene->_camera.getPosition();
 //    scene->changeCameraPos(cam_pos);
@@ -185,6 +172,21 @@ void MainWindow::render()
     scene->drawLaunchPad(point);
     scene->drawCone(cone);
     scene->drawRocket(_rocket);
+
+    Point3D first(0, 0, 0);
+    Point3D second(400, 0, 0);
+    scene->painter->setPen(QColor(Qt::red));
+    scene->drawLine3D(first, second);
+
+    first.changeAll(0, 0, 0);
+    second.changeAll(0, 250, 0);
+    scene->painter->setPen(QColor(Qt::blue));
+    scene->drawLine3D(first, second);
+
+    first.changeAll(0, 0, 0);
+    second.changeAll(0, 0, 400);
+    scene->painter->setPen(QColor(Qt::yellow));
+    scene->drawLine3D(first, second);
 //    Point3D p1(427, 357, 0);
 //    Point3D p2(423, 374, 0);
 //    Point3D p3(427, 357, 0);

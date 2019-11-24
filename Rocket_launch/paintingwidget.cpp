@@ -79,15 +79,16 @@ void PaintWidget::drawCone(Cone &_cone)
         PerspectiveProjection(tmp2);
         PerspectiveProjection(tmp3);
 
-        QColor ambient = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor);
-        qDebug() << ambient << "ambient";
+
         // Перед растеризацией, сделаем проверку на лицевые грани
         bool triangleIsVisible = isTriangleVisible(tmp1, tmp2, tmp3);
         //bool triangleIsVisible = true;
         if (triangleIsVisible == true)
         {
+            QColor ambient = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor);
+            qDebug() << ambient << "ambient";
             painter->setPen(ambient);
-            drawTriangleEdge(tmp1, tmp2, tmp3);
+            //drawTriangleEdge(tmp1, tmp2, tmp3);
             fillObject(tmp1, tmp2, tmp3);
         }
         else
