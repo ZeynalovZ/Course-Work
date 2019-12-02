@@ -49,6 +49,13 @@ public:
     void multiply(SimplePos &mtr);
 };
 
+class perspectiveProjection : public Matrix
+{
+public:
+    perspectiveProjection(double near, double far, double fovy, double AspectRatio);
+
+};
+
 void printTransformedMatrix(Matrix mtr);
 
 

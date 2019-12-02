@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPainter>
 #include <QPixmap>
+#include <QTimer>
 #include "basedrawer.h"
 #include "point3d.h"
 #include "cone.h"
@@ -39,16 +40,21 @@ public:
     int CameraAngleX = 0;
     int CameraAngleY = 0;
     int CameraAngleZ = 0;
+    int timer = 100;
 
 private:
     Ui::MainWindow *ui;
     rocket _rocket;
+    rocket _rocket2;
     Point3D cameraPosition;
     Point3D cameraVisPosition;
     QPainter *painter;
     PaintWidget *scene;
+    QTimer *timerForRocket;
     //Drawer *drawer;
     Cone cone;
+    Cone cone1;
+    Cone LightCone;
     QColor RocketColor = QColor(Qt::gray);
 };
 

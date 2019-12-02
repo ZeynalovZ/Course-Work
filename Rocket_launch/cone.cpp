@@ -101,116 +101,15 @@ void Cone::createCone(Point3D _center, qreal _radius1, qreal _radius2, qreal _he
     FirstCenter.setZ(ConeCenter.z() + distance);
     SecondCenter.setZ(ConeCenter.z() - distance);
 
-
-    //this->firstCircle.clear();
-    //this->secondCircle.clear();
     this->CreateCircle(this->firstCircle, FirstCenter, radius1, VertexCount);
     this->CreateCircle(this->secondCircle, SecondCenter, radius2, VertexCount);
+
+    createVertexShader();
+
     createConnectedLines();
 
-    /*
-    for (int i = 0; i < Triangles.size(); i++)
-    {
-        // это важная часть реализации при построении по ребрам
+    //qDebug() << Triangles.size();
 
-        Edges.addEdge(Triangles[i].A, Triangles[i].B);
-        Edges.addEdge(Triangles[i].B, Triangles[i].C);
-        Edges.addEdge(Triangles[i].C, Triangles[i].A);
-
-    }
-    */
-    /*
-    for (int i = 0; i < this->firstCircle.size() - 4; i += 4)
-    {
-        if (i == firstCircle.size() - 8)
-        {
-            Edges.addEdge(firstCircle[i], firstCircle[i + 3]);
-            Edges.addEdge(firstCircle[i + 1], firstCircle[i + 2]);
-            //qDebug() << firstCircle[0].z() << "z";
-        }
-        else
-        {
-            Edges.addEdge(firstCircle[i], firstCircle[i + 4]);
-            //qDebug() << firstCircle[i + 4].z() << "is z " << i << " " <<  firstCircle.size();
-            Edges.addEdge(firstCircle[i + 1], firstCircle[i + 5]);
-            Edges.addEdge(firstCircle[i + 2], firstCircle[i + 6]);
-            Edges.addEdge(firstCircle[i + 3], firstCircle[i + 7]);
-        }
-    }
-
-    for (int i = 0; i < this->secondCircle.size() - 4; i += 4)
-    {
-        if (i == secondCircle.size() - 8)
-        {
-            Edges.addEdge(secondCircle[i], secondCircle[i + 3]);
-            Edges.addEdge(secondCircle[i + 1], secondCircle[i + 2]);
-            //Edges.addEdge(firstCircle[i], firstCircle[0]);
-            //qDebug() << firstCircle[0].z() << "z";
-        }
-        else
-        {
-            Edges.addEdge(secondCircle[i], secondCircle[i + 4]);
-            //qDebug() << firstCircle[i + 4].z() << "is z " << i << " " <<  firstCircle.size();
-            Edges.addEdge(secondCircle[i + 1], secondCircle[i + 5]);
-            Edges.addEdge(secondCircle[i + 2], secondCircle[i + 6]);
-            Edges.addEdge(secondCircle[i + 3], secondCircle[i + 7]);
-        }
-    }
-    */
-    Point3D tmp1;
-    Point3D tmp2;
-    // Создание ребер
-    /*
-    if (radius1 <= radius2 && this->firstCircle.size() != 4)
-    {
-        qreal k = this->secondCircle.size() / this->firstCircle.size();
-        for (qreal i = 0; i < this->firstCircle.size(); i += 74)
-        {
-
-            // Это, если что - полигоны
-
-            tmp1.changeAll(firstCircle[i].x(), firstCircle[i].y(), firstCircle[i].z());
-            tmp2.changeAll(secondCircle[i * k].x(), secondCircle[i * k].y(), secondCircle[i].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(firstCircle[i + 1].x(), firstCircle[i + 1].y(), firstCircle[i + 1].z());
-            tmp2.changeAll(secondCircle[i * k + 1].x(), secondCircle[i  * k + 1].y(), secondCircle[i * k + 1].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(firstCircle[i + 2].x(), firstCircle[i + 2].y(), firstCircle[i + 2].z());
-            tmp2.changeAll(secondCircle[i * k + 2].x(), secondCircle[i * k + 2].y(), secondCircle[i * k + 2].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(firstCircle[i + 3].x(), firstCircle[i + 3].y(), firstCircle[i + 3].z());
-            tmp2.changeAll(secondCircle[i * k + 3].x(), secondCircle[i * k + 3].y(), secondCircle[i * k + 3].z());
-            Edges.addEdge(tmp1, tmp2);
-        }
-    }
-
-    else
-    {
-        int k = this->firstCircle.size() / this->secondCircle.size();
-        //qDebug() << k << " is k";
-        for (int i = 0; i < this->secondCircle.size(); i += 74)
-        {
-            tmp1.changeAll(secondCircle[i].x(), secondCircle[i].y(), secondCircle[i].z());
-            tmp2.changeAll(firstCircle[i * k].x(), firstCircle[i * k].y(), firstCircle[i * k].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(secondCircle[i + 1].x(), secondCircle[i + 1].y(), secondCircle[i].z());
-            tmp2.changeAll(firstCircle[i * k + 1].x(), firstCircle[i  * k + 1].y(), firstCircle[i * k + 1].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(secondCircle[i + 2].x(), secondCircle[i + 2].y(), secondCircle[i + 2].z());
-            tmp2.changeAll(firstCircle[i * k + 2].x(), firstCircle[i * k + 2].y(), firstCircle[i * k + 2].z());
-            Edges.addEdge(tmp1, tmp2);
-
-            tmp1.changeAll(secondCircle[i + 3].x(), secondCircle[i + 3].y(), secondCircle[i + 3].z());
-            tmp2.changeAll(firstCircle[i * k + 3].x(), firstCircle[i * k + 3].y(), firstCircle[i * k + 3].z());
-            Edges.addEdge(tmp1, tmp2);
-        }
-    }
-    */
 }
 
 void Cone::CreateCircle(std::vector<Point3D> &CirclePoints, Point3D _center, qreal radius, int n)
@@ -251,64 +150,96 @@ void Cone::createRightPolygon(double xc, double yc, double zc, double R,
     }
 }
 
+/* Эта функция заполняет список треугольников (внутри класса точки), к которым принадлежит точка
+ *
+ */
+void whichTriangle(int currentIndex, Point3D &p1, Point3D &p2, Point3D &p3)
+{
+    //qDebug() << "curent index is " << currentIndex;
+    p1.triangleIndexes.push_back(currentIndex);
+    p2.triangleIndexes.push_back(currentIndex);
+    p3.triangleIndexes.push_back(currentIndex);
+}
+
 void Cone::createConnectedLines()
 {
-    Point3D A = FirstCenter;
-    Point3D B;
-    Point3D C;
+
+
+    Point3D *A = &FirstCenter;
+    A->pointIndex = -1;
+    Point3D *B;
+    Point3D *C;
     //  конус с вевршиной вверху
     if (radius1 == 0 && radius2 != 0)
     {
         for (int i = 0; i < secondCircle.size() - 1; i++)
         {
-            B = secondCircle[i];
-            C = secondCircle[i + 1];
-            Triangle tr(A, B, C);
+            whichTriangle(Triangles.size(), FirstCenter, secondCircle[i], secondCircle[i + 1]);
+            B = &secondCircle[i];
+            C = &secondCircle[i + 1];
+
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
-        B = secondCircle[secondCircle.size() - 1];
-        C = secondCircle[0];
-        Triangle tr(A, B, C);
+
+
+        whichTriangle(Triangles.size(), FirstCenter, secondCircle[secondCircle.size() - 1], secondCircle[0]);
+        B = &secondCircle[secondCircle.size() - 1];
+        C = &secondCircle[0];
+        Triangle tr(*A, *B, *C);
         Triangles.push_back(tr);
 
         //qDebug() << secondCircle.size() << "size";
         for (int i = 1; i < secondCircle.size() - 2; i++)
         {
-            A = secondCircle[0];
-            B = secondCircle[i];
-            C = secondCircle[i + 1];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), secondCircle[0], secondCircle[i], secondCircle[i + 1]);
+            A = &secondCircle[0];
+            B = &secondCircle[i];
+            C = &secondCircle[i + 1];
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
 
-        A = secondCircle[0];
-        B = secondCircle[secondCircle.size() - 2];
-        C = secondCircle[secondCircle.size() - 1];
-        Triangle tr1(A, B, C);
+
+        whichTriangle(Triangles.size(), secondCircle[0], secondCircle[secondCircle.size() - 2], secondCircle[secondCircle.size() - 1]);
+        A = &secondCircle[0];
+        B = &secondCircle[secondCircle.size() - 2];
+        C = &secondCircle[secondCircle.size() - 1];
+        Triangle tr1(*A, *B, *C);
         Triangles.push_back(tr1);
     }
 
     // конус с вершиной внизу
     if (radius2 == 0 && radius1 != 0)
     {
+
         for (int i = 0; i < firstCircle.size() - 1; i++)
         {
-            B = firstCircle[i];
-            C = firstCircle[i + 1];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), SecondCenter, firstCircle[i], firstCircle[i + 1]);
+            A = &SecondCenter;
+            B = &firstCircle[i];
+            C = &firstCircle[i + 1];
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
-        B = firstCircle[firstCircle.size() - 1];
-        C = firstCircle[0];
-        Triangle tr(A, B, C);
+
+        whichTriangle(Triangles.size(), SecondCenter, firstCircle[firstCircle.size() - 1], firstCircle[0]);
+        A = &SecondCenter;
+        B = &firstCircle[firstCircle.size() - 1];
+        C = &firstCircle[0];
+        Triangle tr(*A, *B, *C);
         Triangles.push_back(tr);
 
         for (int i = 0; i < firstCircle.size() - 2; i++)
         {
-            A = firstCircle[0];
-            B = firstCircle[i + 1];
-            C = firstCircle[i + 2];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), firstCircle[0], firstCircle[i + 1], firstCircle[i + 2]);
+            A = &firstCircle[0];
+            B = &firstCircle[i + 1];
+            C = &firstCircle[i + 2];
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
     }
@@ -319,47 +250,61 @@ void Cone::createConnectedLines()
     {
         for (int i = 0; i < firstCircle.size() - 1; i++)
         {
-            A = firstCircle[i];
-            B = secondCircle[i];
-            C = secondCircle[i + 1];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), firstCircle[i], secondCircle[i], secondCircle[i + 1]);
+            A = &firstCircle[i];
+            B = &secondCircle[i];
+            C = &secondCircle[i + 1];
+            Triangle tr(*A, *B, *C);
+            //qDebug() << tr.B.triangleIndexes.size() << "herer";
             Triangles.push_back(tr);
 
-            A = secondCircle[i + 1];
-            B = firstCircle[i + 1];
-            C = firstCircle[i];
-            Triangle tr1(A, B, C);
+
+            whichTriangle(Triangles.size(), secondCircle[i + 1], firstCircle[i + 1], firstCircle[i]);
+            A = &secondCircle[i + 1];
+            B = &firstCircle[i + 1];
+            C = &firstCircle[i];
+            Triangle tr1(*A, *B, *C);
             Triangles.push_back(tr1);
         }
+
         int len1 = firstCircle.size() - 1;
         int len2 = secondCircle.size() - 1;
-        A = firstCircle[len1];
-        B = secondCircle[len1];
-        C = secondCircle[0];
-        Triangle tr(A, B, C);
+        whichTriangle(Triangles.size(), firstCircle[len1], secondCircle[len1], secondCircle[0]);
+
+        A = &firstCircle[len1];
+        B = &secondCircle[len1];
+        C = &secondCircle[0];
+        Triangle tr(*A, *B, *C);
         Triangles.push_back(tr);
 
-        A = secondCircle[0];
-        B = firstCircle[0];
-        C = firstCircle[len2];
-        Triangle tr1(A, B, C);
+
+        whichTriangle(Triangles.size(), secondCircle[0], firstCircle[0], firstCircle[len2]);
+        A = &secondCircle[0];
+        B = &firstCircle[0];
+        C = &firstCircle[len2];
+        Triangle tr1(*A, *B, *C);
         Triangles.push_back(tr1);
 
         for (int i = 0; i < firstCircle.size() - 2; i++)
         {
-            A = firstCircle[0];
-            B = firstCircle[i + 1];
-            C = firstCircle[i + 2];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), firstCircle[0], firstCircle[i + 1], firstCircle[i + 2]);
+            A = &firstCircle[0];
+            B = &firstCircle[i + 1];
+            C = &firstCircle[i + 2];
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
 
         for (int i = secondCircle.size() - 1; i > 1; i--)
         {
-            A = secondCircle[secondCircle.size() - 1];
-            B = secondCircle[i - 1];
-            C = secondCircle[i - 2];
-            Triangle tr(A, B, C);
+
+            whichTriangle(Triangles.size(), secondCircle[secondCircle.size() - 1], secondCircle[i - 1], secondCircle[i - 2]);
+            A = &secondCircle[secondCircle.size() - 1];
+            B = &secondCircle[i - 1];
+            C = &secondCircle[i - 2];
+            Triangle tr(*A, *B, *C);
             Triangles.push_back(tr);
         }
 
@@ -421,6 +366,29 @@ void Cone::createConnectedLines()
     */
 
 
+}
+
+void Cone::createVertexShader()
+{
+    int index = 0;
+    for (int i = 0; i < firstCircle.size(); i++)
+    {
+        firstCircle[i].pointIndex = index;
+        index++;
+        vertexShader.push_back(firstCircle[i]);
+    }
+
+    for (int i = 0; i < secondCircle.size(); i++)
+    {
+        secondCircle[i].pointIndex = index;
+        index++;
+        vertexShader.push_back(secondCircle[i]);
+    }
+}
+
+void Cone::computeNormals()
+{
+    ;
 }
 // сделать вращение для каждой точки !!! по каждой координате и в цикле построения окружности выводить какждую точку через поворот
 // в объекте cone хранить угол по каждой координате, значение которых равно сумме всех углов поворотов.

@@ -20,9 +20,6 @@ public:
         zp = _z;
     }
 
-
-
-
 //    friend const Point3D operator +(const Point3D p1, const Point3D p2)
 //    {
 //        return new Point3D(p1.x() + p2.x(), p1.y() + p2.y(), p1.z() + p2.z());
@@ -40,6 +37,11 @@ public:
     qreal z()
     {
         return zp;
+    }
+
+    qreal w()
+    {
+        return wp;
     }
 
     void changeAll(qreal _x, qreal _y, qreal _z)
@@ -63,17 +65,28 @@ public:
         zp = z;
     }
 
+    void setW(qreal w)
+    {
+        wp = w;
+    }
+
     void rotateX(int angle_x);
     void rotateY(int angle_y);
     //void rotateZ(int angle_z);
 
-    void move(int x, int y, int z);
 
+    void move(int x, int y, int z);
     void transform(const std::shared_ptr<Matrix> matrix);
+
+    // это необходимо для того, чтобы знать, какой вершине, сколько теругольников принадлежит
+    int pointIndex;
+    std::vector<int> triangleIndexes;
+    //Vector pointNormal;
 private:
     qreal xp;
     qreal yp;
     qreal zp;
+    qreal wp = 1;
 
 };
 

@@ -30,7 +30,11 @@ public:
 
     void moveRocket();
 
+    void setVertexes();
+
     bool is_visible();
+
+    std::vector<Point3D> vertexes;
 
 public:
     Point3D rocketCenter;

@@ -126,7 +126,7 @@ void Point3D::move(int x, int y, int z)
 void Point3D::transform(const std::shared_ptr<Matrix> matrix)
 {
     std::vector<double> result(4);
-    std::vector<double> data = {this->x(), this->y(), this->z(), 1.};
+    std::vector<double> data = {this->x(), this->y(), this->z(), this->w()};
     for (size_t i = 0; i < 4; i++)
     {
         for (size_t j = 0; j < 4; j++)

@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Clipping.cpp \
+    color.cpp \
         main.cpp \
         mainwindow.cpp \
     basedrawer.cpp \
@@ -44,6 +45,7 @@ SOURCES += \
     fire.cpp \
     vector.cpp
 HEADERS += \
+    color.h \
         mainwindow.h \
     basedrawer.h \
     controller.h \
@@ -60,7 +62,8 @@ HEADERS += \
     paintingwidget.h \
     triangle.h \
     fire.h \
-    vector.h
+    vector.h \
+    zbuffer.h
 
 FORMS += \
         mainwindow.ui

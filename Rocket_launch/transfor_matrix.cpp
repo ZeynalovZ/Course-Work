@@ -56,9 +56,9 @@ SimplePos::SimplePos(Point3D Position)
     _data[2][2] = 1.;
     _data[3][3] = 1.;
 
-    _data[0][3] = -Position.x();
-    _data[1][3] = -Position.y();
-    _data[2][3] = -Position.z();
+    _data[3][0] = -Position.x();
+    _data[3][1] = -Position.y();
+    _data[3][2] = -Position.z();
 }
 
 LookAt::LookAt(Point3D _camPos, Vector _camFront, Vector _camUp)
@@ -66,16 +66,18 @@ LookAt::LookAt(Point3D _camPos, Vector _camFront, Vector _camUp)
     this->fillMatrixWZeros();
     Vector _camRight = crossProduct(_camFront, _camUp);
     _data[0][0] = _camRight.x;
-    _data[0][1] = _camRight.y;
-    _data[0][2] = _camRight.z;
+    _data[1][0] = _camRight.y;
+    _data[2][0] = _camRight.z;
 
-    _data[1][0] = _camUp.x;
+    _data[0][1] = _camUp.x;
     _data[1][1] = _camUp.y;
-    _data[1][2] = _camUp.z;
+    _data[2][1] = _camUp.z;
 
-    _data[2][0] = _camFront.x;
-    _data[2][1] = _camFront.y;
+    _data[0][2] = _camFront.x;
+    _data[1][2] = _camFront.y;
     _data[2][2] = _camFront.z;
+
+    _data[3][3] = 1;
 
 
     SimplePos *mtr = new SimplePos(_camPos);
@@ -111,4 +113,19 @@ void printTransformedMatrix(Matrix mtr)
     {
         qDebug() << mtr.get(i, 0) << mtr.get(i, 1) << mtr.get(i, 2) << mtr.get(i, 3) ;
     }
+}
+
+perspectiveProjection::perspectiveProjection(double near, double far, double fovy, double AspectRatio)
+{
+    if (far == near)
+    {
+        qDebug() << "far == near !!";
+    }
+    double zoomy = tan(fovy / 2);
+    double zoomx = zoomy / AspectRatio;
+    _data[0][0] = zoomx;
+    _data[1][1] = zoomy;
+    _data[2][2] = -((far + near) / (far - near));
+    _data[2][3] = -2 * near * far / (far - near);
+    _data[3][2] = -1;
 }

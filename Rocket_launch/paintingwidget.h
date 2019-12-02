@@ -16,6 +16,8 @@
 #include "edges.h"
 #include "vector.h"
 #include "fire.h"
+#include "color.h"
+#include "zbuffer.h"
 
 #define WIDTH  850
 #define HEIGHT  715
@@ -29,17 +31,6 @@ struct BarycentricCoords
     double b3;
 };
 
-struct DepthBuffer
-{
-    double *zbuffer = new double[WIDTH * HEIGHT];
-    void fillbuffer()
-    {
-        for (int i = 0; i < WIDTH * HEIGHT; i++)
-        {
-            zbuffer[i] = -10000;
-        }
-    }
-};
 
 
 
@@ -56,27 +47,47 @@ public:
     void drawLine3D(Point3D first, Point3D second);
     void drawLaunchPad(Point3D point);
     void drawTriangleEdge(Point3D a, Point3D b, Point3D c);
+    void computeVertexNormals(Point3D A, Point3D B, Point3D C);
 
     void rotateCamera(Point3D &point);
+    void rotateInversedCamera(Point3D &point);
+    void rotateLight(Point3D &point);
     void PerspectiveProjection(Point3D &point);
 
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
+    void fillShadowBuffer(Point3D A, Point3D B, Point3D C);
+    void drawShadow(Point3D P, double z);
     void changeCameraPos(Point3D &cameraView);
     void changeVisCamera(double x, double y, double z);
     void clear();
     void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square);
     void makeFire();
-    bool isTriangleVisible(Point3D A, Point3D B, Point3D C);
-    QColor ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor);
+    bool isTriangleVisible(Point3D A, Point3D B, Point3D C, Point3D visiblePoint);
+    QColor ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor, Point3D LightPoint);
+
+
     Camera _camera;
     Camera _visibleCamera;
     std::vector<Triangle> trianglesOnImage;
     DepthBuffer ZBuffer;
+    DepthBuffer ZBufferShadows;
     BarycentricCoords BarCoor;
     QPainter *painter;
     fire RocketFire;
+    Camera lightSource;
     Point3D lightPoint;
+    double WindowAspectRatio;
+    int x_down = 200, y_down = 200;
+    std::vector<Vector> vertexNormals;
+
+
+    Point3D CameraPosition;
+    Vector vUp;
+    Vector vFront;
+    //LookAt camera;
+    Point3D firePoint;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
@@ -90,10 +101,53 @@ private:
     QColor fill_color;
     QColor bg_color;
     QColor lightColor;
+    QColor ambient;
 
 
 
 
+};
+
+
+static QVector<QRgb> Palette = {
+    qRgb(0x07,0x07,0x07),
+    qRgb(0x1F,0x07,0x07),
+    qRgb(0x2F,0x0F,0x07),
+    qRgb(0x47,0x0F,0x07),
+    qRgb(0x57,0x17,0x07),
+    qRgb(0x67,0x1F,0x07),
+    qRgb(0x77,0x1F,0x07),
+    qRgb(0x8F,0x27,0x07),
+    qRgb(0x9F,0x2F,0x07),
+    qRgb(0xAF,0x3F,0x07),
+    qRgb(0xBF,0x47,0x07),
+    qRgb(0xC7,0x47,0x07),
+    qRgb(0xDF,0x4F,0x07),
+    qRgb(0xDF,0x57,0x07),
+    qRgb(0xDF,0x57,0x07),
+    qRgb(0xD7,0x5F,0x07),
+    qRgb(0xD7,0x5F,0x07),
+    qRgb(0xD7,0x67,0x0F),
+    qRgb(0xCF,0x6F,0x0F),
+    qRgb(0xCF,0x77,0x0F),
+    qRgb(0xCF,0x7F,0x0F),
+    qRgb(0xCF,0x87,0x17),
+    qRgb(0xC7,0x87,0x17),
+    qRgb(0xC7,0x8F,0x17),
+    qRgb(0xC7,0x97,0x1F),
+    qRgb(0xBF,0x9F,0x1F),
+    qRgb(0xBF,0x9F,0x1F),
+    qRgb(0xBF,0xA7,0x27),
+    qRgb(0xBF,0xA7,0x27),
+    qRgb(0xBF,0xAF,0x2F),
+    qRgb(0xB7,0xAF,0x2F),
+    qRgb(0xB7,0xB7,0x2F),
+    qRgb(0xB7,0xB7,0x37),
+    qRgb(0xCF,0xCF,0x6F),
+    qRgb(0xDF,0xDF,0x9F),
+    qRgb(0xEF,0xEF,0xC7),
+    qRgb(0xFF,0xFF,0xFF),
+    qRgb(0x0C, 0xC4, 0xFF)
 };
 
 

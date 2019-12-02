@@ -106,3 +106,9 @@ void rocket::moveRocket()
     }
 }
 
+void rocket::setVertexes()
+{
+    int i = 0;
+
+}
+

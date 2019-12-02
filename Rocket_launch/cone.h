@@ -21,6 +21,8 @@ public:
     void createRightPolygon(double xc, double yc, double zc, double R,
                             std::vector<Point3D> &CirclePoints, int n);
     void createConnectedLines();
+    void createVertexShader();
+    void computeNormals();
     void Rotatex(int angle_x);
     void Rotatey(int angle_y, qreal _y, qreal _z);
     void Rotatez(int angle_z, qreal _y, qreal _x);
@@ -36,13 +38,14 @@ public:
 
     std::vector<Point3D> firstCircle;
     std::vector<Point3D> secondCircle;
+    std::vector<Point3D> vertexShader;
     std::vector<Triangle> Triangles;
-    std::vector<Triangle> TrianglesImage;
 
     Point3D FirstCenter;
     Point3D SecondCenter;
     edges Edges;
     QColor ObjectColor;
+    int index = 0;
 
 };
 

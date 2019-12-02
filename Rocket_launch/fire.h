@@ -2,10 +2,14 @@
 #define FIRE_H
 #include <QRgb>
 #include <QImage>
+#include <QPixmap>
 #include <QDebug>
+#include <QPainter>
+#include "point3d.h"
+#include "zbuffer.h"
 
-const int FIRE_WIDTH  = 320;
-const int FIRE_HEIGHT = 240;
+const int FIRE_WIDTH  = 75;
+const int FIRE_HEIGHT = 250;
 static uchar firePixels[FIRE_WIDTH * FIRE_HEIGHT];
 
 static QVector<QRgb> palette = {
@@ -45,7 +49,8 @@ static QVector<QRgb> palette = {
     qRgb(0xCF,0xCF,0x6F),
     qRgb(0xDF,0xDF,0x9F),
     qRgb(0xEF,0xEF,0xC7),
-    qRgb(0xFF,0xFF,0xFF)
+    qRgb(0xFF,0xFF,0xFF),
+    qRgb(0x0C, 0xC4, 0xFF)
 };
 
 
@@ -54,8 +59,9 @@ class fire
 public:
     fire();
     QImage framebuffer;
+    QPixmap pixmap;
 public slots:
-    void update();
+    void update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage &image);
 
 };
 

@@ -47,6 +47,53 @@ void Vector::transform(const std::shared_ptr<Matrix> matrix)
     *this = {result[0], result[1], result[2]};
 }
 
+void Vector::addVector(Vector vec)
+{
+    this->x = this->x + vec.x;
+    this->y = this->y + vec.y;
+    this->z = this->z + vec.z;
+    this->w = this->w + vec.w;
+}
+
+Vector &Vector::operator=(const Vector &rv)
+{
+    if (this == &rv)
+    {
+        return *this;
+    }
+    this->x = rv.x;
+    this->y = rv.y;
+    this->z = rv.z;
+    this->w = rv.z;
+    return *this;
+}
+
+const Vector Vector::operator+(const Vector &rv) const
+{
+    double tmpX = this->x + rv.x;
+    double tmpY = this->y + rv.y;
+    double tmpZ = this->z + rv.z;
+    return Vector(tmpX, tmpY, tmpZ);
+}
+
+const Vector Vector::operator-(const Vector &rv) const
+{
+    double tmpX = this->x - rv.x;
+    double tmpY = this->y - rv.y;
+    double tmpZ = this->z - rv.z;
+    return Vector(tmpX, tmpY, tmpZ);
+}
+
+const Vector Vector::operator*(const double src) const
+{
+    double tmpX = this->x * src;
+    double tmpY = this->y * src;
+    double tmpZ = this->z * src;
+    return Vector(tmpX, tmpY, tmpZ);
+}
+
+
+
 Vector crossProduct(Vector V1, Vector V2)
 {
     Vector vResult;
