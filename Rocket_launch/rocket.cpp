@@ -1,7 +1,7 @@
 #include "rocket.h"
 #include <QDebug>
 #define SCALE 10
-#define EdgesCircleCount 15
+#define EdgesCircleCount 40
 rocket::rocket(Point3D center)
 {
 

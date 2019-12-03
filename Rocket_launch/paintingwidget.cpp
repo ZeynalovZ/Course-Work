@@ -49,9 +49,9 @@ PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
     lightPoint = Point3D(0, 0, 1000);
     lightSource.setPosition(lightPoint);
     WindowAspectRatio = widget_width / widget_height;
-    image->setColorTable(Palette);
+    //image->setColorTable(Palette);
 
-    firePoint.changeAll(X_SIZE, Y_SIZE, 1000);
+    firePoint.changeAll(X_SIZE, Y_SIZE, 10000);
 
     qDebug() << WindowAspectRatio << "is Window aspect ratio";
 }
@@ -628,7 +628,7 @@ void PaintWidget::makeFire()
 
     //painter->drawImage(0, 0, RocketFire.framebuffer);
     RocketFire.update(*painter, firePoint, ZBuffer, *image);
-    firePoint.setY(firePoint.y() - 1);
+    //firePoint.setY(firePoint.y() - 1);
     //y_down--;
     update();
     //RocketFire.update();

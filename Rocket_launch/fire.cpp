@@ -55,20 +55,19 @@ fire::fire()
 void fire::update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage &image)
 {
     doFire();
+    int i = 0;
     for(int y = 0; y < FIRE_HEIGHT; y++)
     {
         auto rowData = framebuffer.scanLine(y);
         for(int x = 0; x < FIRE_WIDTH; x++)
         {
-            rowData[x] = firePixels[y * FIRE_WIDTH + x];
-            //image.setPixel(x, y, firePixels[y * FIRE_WIDTH + x]);
-            painter.setPen(QColor(firePixels[y * FIRE_WIDTH + x]));
-            painter.drawPoint(x, y);
+            i = y * FIRE_WIDTH + x;
+            rowData[x] = firePixels[i];
+            //qDebug() << qRed(firePixels[i]) << "red" << i;
             //painter.setPen(QColor(firePixels[y * FIRE_WIDTH + x]));
-            //painter.drawPoint(x + 200, y + 200);
-            //painter.drawPoint(x + 300, y + 100);
+
         }
     }
-    painter.drawImage(Point.x() + 13, Point.y(), framebuffer);
+    painter.drawImage(QPoint(Point.x(), Point.y()), framebuffer);
 
 }
