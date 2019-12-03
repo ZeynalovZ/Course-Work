@@ -1,5 +1,8 @@
 #include "fire.h"
 
+#define WIDTH  850
+#define HEIGHT  715
+
 static void spreadFire(int src)
 {
     auto pixel = firePixels[src];
@@ -56,18 +59,32 @@ void fire::update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage 
 {
     doFire();
     int i = 0;
+    int tmp_x, tmp_y;
+    int clr;
+    Point.setX(Point.x() + 12);
     for(int y = 0; y < FIRE_HEIGHT; y++)
     {
-        auto rowData = framebuffer.scanLine(y);
         for(int x = 0; x < FIRE_WIDTH; x++)
         {
             i = y * FIRE_WIDTH + x;
-            rowData[x] = firePixels[i];
-            //qDebug() << qRed(firePixels[i]) << "red" << i;
-            //painter.setPen(QColor(firePixels[y * FIRE_WIDTH + x]));
+            //qDebug() << i << "is i";
+            //rowData[x] = firePixels[i];
+            clr = firePixels[i];
+            painter.setPen(paletteColor[clr]);
+            //painter.drawPoint(Point.x() + x, Point.y() + y);
+            tmp_x = int(Point.x() + x);
+            tmp_y = int(Point.y() + y);
+            if (tmp_x + tmp_y * WIDTH >= 0 && tmp_x + tmp_y * WIDTH < WIDTH * HEIGHT)
+            {
+                if (Zbuffer.zbuffer[tmp_x + WIDTH * tmp_y] < Point.z())
+                {
+                    painter.drawPoint(tmp_x, tmp_y);
+                }
+            }
+
+
 
         }
     }
-    painter.drawImage(QPoint(Point.x(), Point.y()), framebuffer);
 
 }

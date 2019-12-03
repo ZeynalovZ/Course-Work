@@ -22,8 +22,12 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new PaintWidget(this);
     timerForRocket = new QTimer();
     timerForRocket->setSingleShot(true);
-    connect(timerForRocket, SIGNAL(timeout()), this, SLOT(MoveRocket()));
 
+    timerForFire = new QTimer();
+    timerForFire->setSingleShot(true);
+
+    connect(timerForRocket, SIGNAL(timeout()), this, SLOT(MoveRocket()));
+    connect(timerForFire, SIGNAL(timeout()), this, SLOT(updateFire()));
 
     // Создадим ракету передав в нее центр основания ракеты и ее масштаб
     Point3D rocketCenter(50, 0, 0);
@@ -189,6 +193,9 @@ void MainWindow::render()
     scene->drawCone(cone);
     scene->drawCone(cone1);
 
+    // TODO: rotate firepoint
+    //scene->rotateCamera(scene->firePoint);
+
 
     scene->drawRocket(_rocket);
     //scene->drawRocket(_rocket2);
@@ -245,9 +252,11 @@ void MainWindow::MoveRocket()
     //qDebug() << "moving ...";
 
     _rocket.moveRocket();
+
     render();
-    //scene->PerspectiveProjection(scene->firePoint);
     scene->makeFire();
+    //scene->PerspectiveProjection(scene->firePoint);
+
     if (!timerForRocket->isActive())
     {
         if (timer > 1)
@@ -256,6 +265,15 @@ void MainWindow::MoveRocket()
     }
 
 
+}
+
+void MainWindow::updateFire()
+{
+//    scene->makeFire();
+//    if (!timerForFire->isActive())
+//    {
+//        timerForFire->start(timer);
+//    }
 }
 /*
 // добавить камеру,
@@ -271,4 +289,7 @@ void MainWindow::on_GoButton_clicked()
 {
 
     timerForRocket->start(timer);
+
+    timerForFire->start(timer);
+    //render();
 }

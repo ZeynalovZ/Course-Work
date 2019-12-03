@@ -628,7 +628,7 @@ void PaintWidget::makeFire()
 
     //painter->drawImage(0, 0, RocketFire.framebuffer);
     RocketFire.update(*painter, firePoint, ZBuffer, *image);
-    //firePoint.setY(firePoint.y() - 1);
+    firePoint.setY(firePoint.y() - 1);
     //y_down--;
     update();
     //RocketFire.update();

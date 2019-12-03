@@ -34,6 +34,8 @@ private slots:
 
     void MoveRocket();
 
+    void updateFire();
+
     void on_GoButton_clicked();
 
 public:
@@ -41,6 +43,7 @@ public:
     int CameraAngleY = 0;
     int CameraAngleZ = 0;
     int timer = 100;
+    int timeForFire = 10;
 
 private:
     Ui::MainWindow *ui;
@@ -51,6 +54,7 @@ private:
     QPainter *painter;
     PaintWidget *scene;
     QTimer *timerForRocket;
+    QTimer *timerForFire;
     //Drawer *drawer;
     Cone cone;
     Cone cone1;
