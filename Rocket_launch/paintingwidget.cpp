@@ -9,8 +9,8 @@
 #define Y_SIZE  715 / 2
 #define W_WIDTH 850
 #define W_HEIGHT 715
-#define AMBIENT 0.1
-#define SPECULARSTRENGHT 0.7
+#define AMBIENT 0.2
+#define SPECULARSTRENGHT 0.5
 
 
 #define EPS 0.00001
@@ -151,7 +151,7 @@ void PaintWidget::drawCone(Cone &_cone)
             PerspectiveProjection(stmp2);
             PerspectiveProjection(stmp3);
 
-            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, lightSource.getPosition());
+            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, tmpLight);
             if (triangleIsVisibleForLight == true)
             {
                 fillShadowBuffer(stmp1, stmp2, stmp3);
@@ -375,8 +375,8 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
     _camera.setZAngle(angleZ);
     //fillShadow = true;
 //    lightSource.setXAngle(angleX);
-//    lightSource.setYAngle(-angleY);
-//    lightSource.setZAngle(-angleZ);
+    lightSource.setYAngle(angleY);
+    lightSource.setZAngle(angleZ);
 
 }
 
@@ -630,7 +630,7 @@ void PaintWidget::drawShadow(Point3D P)
     if (P.x() + P.y() * WIDTH >= 0 && P.x() + P.y() * WIDTH < WIDTH * HEIGHT)
     {
         //qDebug() << ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] << z;
-        if (ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] - 60 > P.z())
+        if (ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] - 100 > P.z())
         {
             painter->setPen(ambient);
         }

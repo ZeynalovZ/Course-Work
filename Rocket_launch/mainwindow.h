@@ -54,7 +54,7 @@ public:
     int CameraAngleX = 0;
     int CameraAngleY = 0;
     int CameraAngleZ = 0;
-    int timer = 100;
+    int timer = 50;
     int timeForFire = 10;
 
 private:
