@@ -40,11 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
     treeColor.setRed(139);
     treeColor.setGreen(69);
     treeColor.setBlue(19);
-    cone.createCone(coneCenter, 30, 30, 100, 5, treeColor);
-    coneCenter.changeAll(150, 150, 135);
-    cone1.createCone(coneCenter, 50, 50, 70, 6, QColor(Qt::darkGreen));
+    cone.createCone(coneCenter, 30, 30, 100, 10, treeColor);
+    coneCenter.changeAll(-150, 150, 150);
+    cone1.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::darkGreen));
 
-    coneCenter.changeAll(0, 0, 800);
+    coneCenter.changeAll(0, 1000, 800);
     LightCone.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::white));
 
     cameraPosition.setX(0);
@@ -188,8 +188,12 @@ void MainWindow::render()
     scene->_camera.setPosition(cameraPosition);
     //sqDebug() << scene->_visibleCamera.x() << scene->_visibleCamera.y() << scene->_visibleCamera.z() << "dots";
     scene->ZBuffer.fillbuffer();
-    scene->ZBufferShadows.fillbuffer();
-    scene->drawLaunchPad(point);
+    if (scene->fillShadow == true)
+    {
+        scene->ZBufferShadows.fillbuffer();
+    }
+
+
     scene->drawCone(cone);
     scene->drawCone(cone1);
 
@@ -198,6 +202,10 @@ void MainWindow::render()
 
 
     scene->drawRocket(_rocket);
+
+
+    scene->drawLaunchPad(point);
+    scene->fillShadow = false;
     //scene->drawRocket(_rocket2);
 
     //scene->drawCone(LightCone);
@@ -250,13 +258,18 @@ void MainWindow::on_rotate_clicked()
 void MainWindow::MoveRocket()
 {
     //qDebug() << "moving ...";
-
+    //thread tr(_rocket.moveRocket());
     _rocket.moveRocket();
-
+//    std::thread tr1(&rocket::moveRocket, std::ref(_rocket));
+//    std::thread tr2(&MainWindow::render, this);
+//    std::thread tr3(&PaintWidget::makeFire, std::ref(scene));
     render();
     scene->makeFire();
     //scene->PerspectiveProjection(scene->firePoint);
 
+//    tr1.join();
+//    tr2.join();
+//    tr3.join();
     if (!timerForRocket->isActive())
     {
         if (timer > 1)

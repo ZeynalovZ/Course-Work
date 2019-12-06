@@ -46,8 +46,9 @@ PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
 //    Vector vFront(Point3D(0, 0, 0), CameraPosition);
 //    camera = LookAt(CameraPosition, vUp, vFront);
     //printTransformedMatrix(camera);
-    lightPoint = Point3D(0, 0, 1000);
+    lightPoint = Point3D(0, 1000, 1000);
     lightSource.setPosition(lightPoint);
+    lightSource.setXAngle(50); // or -50
     WindowAspectRatio = widget_width / widget_height;
     //image->setColorTable(Palette);
 
@@ -75,7 +76,7 @@ void PaintWidget::drawCone(Cone &_cone)
     int pointIndex1, pointIndex2, pointIndex3;
     bool triangleIsVisible, triangleIsVisibleForLight;
     Point3D tmpLight = lightSource.getPosition();
-    //rotateCamera(tmpLight);
+    rotateCamera(tmpLight);
     //rotateLight(tmpLight);
     // вычисление усредненных нормелей
 //    vertexNormals.clear();
@@ -83,6 +84,7 @@ void PaintWidget::drawCone(Cone &_cone)
 //    {
 //        vertexNormals.push_back(Vector());
 //    }
+
 
 //    for (auto &triangle : _cone.Triangles)
 //    {
@@ -109,6 +111,8 @@ void PaintWidget::drawCone(Cone &_cone)
         stmp2 = triangle.B;
         stmp3 = triangle.C;
 
+
+
 //        qDebug() << tmp1.pointIndex << "point index A";
 //        qDebug() << tmp2.pointIndex << "point index B";
 //        qDebug() << tmp3.pointIndex << "point index C";
@@ -131,22 +135,27 @@ void PaintWidget::drawCone(Cone &_cone)
         rotateCamera(tmp2);
         rotateCamera(tmp3);
 
-//        rotateLight(stmp1);
-//        rotateLight(stmp2);
-//        rotateLight(stmp3);
 
-//        PerspectiveProjection(stmp1);
-//        PerspectiveProjection(stmp2);
-//        PerspectiveProjection(stmp3);
 
-//        triangleIsVisibleForLight = isTriangleVisible(tmp1, tmp2, tmp3, lightSource.getPosition());
-//        if (triangleIsVisibleForLight == true)
-//        {
-//            fillShadowBuffer(stmp1, stmp2, stmp3);
-////            painter->setPen(QColor(Qt::red));
-////            drawTriangleEdge(stmp1, stmp2, stmp3);
-//        }
+        if (fillShadow == true)
+        {
+            rotateLight(stmp1);
+            rotateLight(stmp2);
+            rotateLight(stmp3);
 
+            PerspectiveProjection(stmp1);
+            PerspectiveProjection(stmp2);
+            PerspectiveProjection(stmp3);
+
+            triangleIsVisibleForLight = isTriangleVisible(tmp1, tmp2, tmp3, lightSource.getPosition());
+            if (triangleIsVisibleForLight == true)
+            {
+                fillShadowBuffer(stmp1, stmp2, stmp3);
+    //            painter->setPen(QColor(Qt::red));
+
+            }
+        }
+        //drawTriangleEdge(stmp1, stmp2, stmp3);
 
         PerspectiveProjection(tmp1);
         PerspectiveProjection(tmp2);
@@ -228,7 +237,7 @@ void PaintWidget::drawLaunchPad(Point3D point)
 
 void PaintWidget::drawTriangleEdge(Point3D a, Point3D b, Point3D c)
 {
-    qDebug() << a.x() << b.x() << c.x() << "points";
+    //qDebug() << a.x() << b.x() << c.x() << "points";
     painter->drawLine(a.x() + X_SIZE, a.y() + Y_SIZE, b.x() + X_SIZE, b.y() + Y_SIZE);
     painter->drawLine(b.x() + X_SIZE, b.y() + Y_SIZE, c.x() + X_SIZE, c.y() + Y_SIZE);
     painter->drawLine(c.x() + X_SIZE, c.y() + Y_SIZE, a.x() + X_SIZE, a.y() + Y_SIZE);
@@ -238,40 +247,55 @@ void PaintWidget::drawTriangleEdge(Point3D a, Point3D b, Point3D c)
 void PaintWidget::rotateCamera(Point3D &point)
 {
     auto cam_pos = _camera.getPosition();
-    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(0, 0, 0));
+    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(-cam_pos.x(), -cam_pos.y(), 0));
     point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
+    if (_camera.getXAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
+    if (_camera.getYAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
 
+    if(_camera.getZAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
 }
 
 void PaintWidget::rotateInversedCamera(Point3D &point)
 {
-    auto cam_pos = lightSource.getPosition();
-    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(0, 0, 0));
+    auto cam_pos = _camera.getPosition();
+    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(cam_pos.x(), cam_pos.y(), 0));
     point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOyMatrix(_camera.getYAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOzMatrix(_camera.getZAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
+    if (_camera.getXAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
+    if (_camera.getYAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOyMatrix(_camera.getYAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
+
+    if(_camera.getZAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOzMatrix(_camera.getZAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
 }
 
 void PaintWidget::rotateLight(Point3D &point)
 {
     auto cam_pos = lightSource.getPosition();
     std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(0, 0,0));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOyMatrix(_camera.getYAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOzMatrix(_camera.getZAngle() * M_PI / TO_RAD_180));
+    //point.transform(transform_matrix);
+    transform_matrix.reset(new RotateOxMatrix(lightSource.getXAngle() * M_PI / TO_RAD_180));
     point.transform(transform_matrix);
 }
 
@@ -326,7 +350,9 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
 {
     _camera.setXAngle(angleX);
     _camera.setYAngle(angleY);
-    _camera.setZAngle(angleZ);/*
+    _camera.setZAngle(angleZ);
+    fillShadow = true;
+    /*
     lightSource.setXAngle(-angleX);
     lightSource.setYAngle(-angleY);
     lightSource.setZAngle(-angleZ);*/
@@ -483,7 +509,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
                     //qDebug() << z << " is Z";
                     if (z > ZBuffer.zbuffer[x + y * WIDTH])
                     {
-                        ShadowPoint.changeAll(x, y, z);
+                        ShadowPoint.changeAll(x - X_SIZE, y - Y_SIZE, z - 10000);
                         ZBuffer.zbuffer[x + y * WIDTH] = z;
                         //drawShadow(ShadowPoint, z);
                         painter->drawPoint(x, y);
@@ -568,16 +594,28 @@ void PaintWidget::fillShadowBuffer(Point3D A, Point3D B, Point3D C)
 void PaintWidget::drawShadow(Point3D P, double z)
 {
     rotateInversedCamera(P);
-    //rotateLight(P);
+
+    rotateLight(P);
+    //qDebug() << "Point" << P.x() << P.y() << P.z();
+
+    P.setX((P.x() + X_SIZE));
+    P.setY(P.y() + Y_SIZE);
+    P.setZ(P.z() + 10000);
+
     painter->setPen(ambient);
     if (P.x() + P.y() * WIDTH >= 0 && P.x() + P.y() * WIDTH < WIDTH * HEIGHT)
     {
-            if( ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] > z)
+        //qDebug() << ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] << z;
+            if( ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] - 50 > P.z())
             {
                 painter->setPen(QColor(Qt::darkBlue));
             }
 
 //                    painter->drawPoint(x, y);
+    }
+    else
+    {
+//        qDebug() << "out of" << P.x() << P.y() << P.z();
     }
 //    painter->drawPoint(P.x(), P.y());
 

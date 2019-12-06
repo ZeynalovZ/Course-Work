@@ -88,6 +88,8 @@ public:
     //LookAt camera;
     Point3D firePoint;
 
+    bool fillShadow = true;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);

@@ -11,6 +11,7 @@
 #include "drawer.h"
 #include "rocket.h"
 #include "paintingwidget.h"
+#include <thread>
 
 namespace Ui {
 class MainWindow;
