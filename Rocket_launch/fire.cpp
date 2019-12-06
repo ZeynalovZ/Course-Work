@@ -70,17 +70,21 @@ void fire::update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage 
             //qDebug() << i << "is i";
             //rowData[x] = firePixels[i];
             clr = firePixels[i];
-            painter.setPen(paletteColor[clr]);
-            //painter.drawPoint(Point.x() + x, Point.y() + y);
-            tmp_x = int(Point.x() + x);
-            tmp_y = int(Point.y() + y);
-            if (tmp_x + tmp_y * WIDTH >= 0 && tmp_x + tmp_y * WIDTH < WIDTH * HEIGHT)
+            if (clr > 1)
             {
-                if (Zbuffer.zbuffer[tmp_x + WIDTH * tmp_y] < Point.z())
+                painter.setPen(paletteColor[clr]);
+                //painter.drawPoint(Point.x() + x, Point.y() + y);
+                tmp_x = int(Point.x() + x);
+                tmp_y = int(Point.y() + y);
+                if (tmp_x + tmp_y * WIDTH >= 0 && tmp_x + tmp_y * WIDTH < WIDTH * HEIGHT)
                 {
-                    painter.drawPoint(tmp_x, tmp_y);
+                    if (Zbuffer.zbuffer[tmp_x + WIDTH * tmp_y] < Point.z())
+                    {
+                        painter.drawPoint(tmp_x, tmp_y);
+                    }
                 }
             }
+
 
 
 

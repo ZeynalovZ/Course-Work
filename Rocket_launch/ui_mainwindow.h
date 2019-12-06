@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.1
+** Created by: Qt User Interface Compiler version 5.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,13 +10,17 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSplitter>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -29,141 +33,211 @@ public:
     QWidget *centralWidget;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *Layuot;
-    QSplitter *splitter;
-    QWidget *verticalLayoutWidget;
-    QVBoxLayout *control;
-    QHBoxLayout *horizontalLayout_15;
-    QLabel *label_3;
-    QLineEdit *editZ;
-    QHBoxLayout *horizontalLayout_14;
-    QLabel *label;
+    QPushButton *GoButton;
+    QLabel *color_label;
+    QPushButton *color_button;
+    QPushButton *Draw;
+    QGroupBox *groupBox;
+    QTextEdit *AngleInfo;
+    QPushButton *pushButton;
+    QPushButton *pushButton_2;
+    QPushButton *pushButton_3;
+    QPushButton *pushButton_4;
+    QGroupBox *groupBox_2;
     QLineEdit *editX;
-    QHBoxLayout *horizontalLayout_20;
     QLabel *label_2;
     QLineEdit *editY;
+    QLabel *label;
+    QLineEdit *editZ;
+    QLabel *label_3;
     QPushButton *rotate;
-    QPushButton *Draw;
-    QHBoxLayout *horizontalLayout_13;
-    QTextEdit *AngleInfo;
-    QPushButton *GoButton;
+    QLabel *label_4;
+    QLineEdit *editX_2;
+    QLabel *label_5;
+    QLineEdit *editY_2;
+    QPushButton *rotate_2;
+    QLineEdit *editZ_2;
+    QLabel *label_6;
+    QFrame *line;
+    QCheckBox *checkBox;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1153, 794);
+            MainWindow->setObjectName(QStringLiteral("MainWindow"));
+        MainWindow->resize(1319, 793);
         centralWidget = new QWidget(MainWindow);
-        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+        centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayoutWidget_2 = new QWidget(centralWidget);
-        verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
+        verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
         verticalLayoutWidget_2->setGeometry(QRect(10, 10, 871, 761));
         Layuot = new QVBoxLayout(verticalLayoutWidget_2);
         Layuot->setSpacing(6);
         Layuot->setContentsMargins(11, 11, 11, 11);
-        Layuot->setObjectName(QString::fromUtf8("Layuot"));
+        Layuot->setObjectName(QStringLiteral("Layuot"));
         Layuot->setContentsMargins(0, 0, 0, 0);
-        splitter = new QSplitter(centralWidget);
-        splitter->setObjectName(QString::fromUtf8("splitter"));
-        splitter->setGeometry(QRect(890, 10, 251, 721));
-        splitter->setOrientation(Qt::Horizontal);
-        verticalLayoutWidget = new QWidget(splitter);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        control = new QVBoxLayout(verticalLayoutWidget);
-        control->setSpacing(6);
-        control->setContentsMargins(11, 11, 11, 11);
-        control->setObjectName(QString::fromUtf8("control"));
-        control->setContentsMargins(0, 0, 0, 0);
-        horizontalLayout_15 = new QHBoxLayout();
-        horizontalLayout_15->setSpacing(6);
-        horizontalLayout_15->setObjectName(QString::fromUtf8("horizontalLayout_15"));
-        label_3 = new QLabel(verticalLayoutWidget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-
-        horizontalLayout_15->addWidget(label_3);
-
-        editZ = new QLineEdit(verticalLayoutWidget);
-        editZ->setObjectName(QString::fromUtf8("editZ"));
-
-        horizontalLayout_15->addWidget(editZ);
-
-
-        control->addLayout(horizontalLayout_15);
-
-        horizontalLayout_14 = new QHBoxLayout();
-        horizontalLayout_14->setSpacing(6);
-        horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
-        label = new QLabel(verticalLayoutWidget);
-        label->setObjectName(QString::fromUtf8("label"));
-
-        horizontalLayout_14->addWidget(label);
-
-        editX = new QLineEdit(verticalLayoutWidget);
-        editX->setObjectName(QString::fromUtf8("editX"));
-
-        horizontalLayout_14->addWidget(editX);
-
-
-        control->addLayout(horizontalLayout_14);
-
-        horizontalLayout_20 = new QHBoxLayout();
-        horizontalLayout_20->setSpacing(6);
-        horizontalLayout_20->setObjectName(QString::fromUtf8("horizontalLayout_20"));
-        label_2 = new QLabel(verticalLayoutWidget);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-
-        horizontalLayout_20->addWidget(label_2);
-
-        editY = new QLineEdit(verticalLayoutWidget);
-        editY->setObjectName(QString::fromUtf8("editY"));
-
-        horizontalLayout_20->addWidget(editY);
-
-
-        control->addLayout(horizontalLayout_20);
-
-        rotate = new QPushButton(verticalLayoutWidget);
-        rotate->setObjectName(QString::fromUtf8("rotate"));
-
-        control->addWidget(rotate);
-
-        Draw = new QPushButton(verticalLayoutWidget);
-        Draw->setObjectName(QString::fromUtf8("Draw"));
-
-        control->addWidget(Draw);
-
-        horizontalLayout_13 = new QHBoxLayout();
-        horizontalLayout_13->setSpacing(6);
-        horizontalLayout_13->setObjectName(QString::fromUtf8("horizontalLayout_13"));
-
-        control->addLayout(horizontalLayout_13);
-
-        AngleInfo = new QTextEdit(verticalLayoutWidget);
-        AngleInfo->setObjectName(QString::fromUtf8("AngleInfo"));
-
-        control->addWidget(AngleInfo);
-
-        GoButton = new QPushButton(verticalLayoutWidget);
-        GoButton->setObjectName(QString::fromUtf8("GoButton"));
-
-        control->addWidget(GoButton);
-
-        splitter->addWidget(verticalLayoutWidget);
+        GoButton = new QPushButton(centralWidget);
+        GoButton->setObjectName(QStringLiteral("GoButton"));
+        GoButton->setGeometry(QRect(1060, 730, 161, 41));
+        color_label = new QLabel(centralWidget);
+        color_label->setObjectName(QStringLiteral("color_label"));
+        color_label->setGeometry(QRect(902, 384, 41, 40));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(20);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(color_label->sizePolicy().hasHeightForWidth());
+        color_label->setSizePolicy(sizePolicy);
+        color_label->setMinimumSize(QSize(30, 40));
+        color_label->setMaximumSize(QSize(120, 120));
+        color_label->setStyleSheet(QStringLiteral(""));
+        color_button = new QPushButton(centralWidget);
+        color_button->setObjectName(QStringLiteral("color_button"));
+        color_button->setGeometry(QRect(960, 390, 189, 27));
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(color_button->sizePolicy().hasHeightForWidth());
+        color_button->setSizePolicy(sizePolicy1);
+        color_button->setMaximumSize(QSize(1000, 16777215));
+        QFont font;
+        font.setPointSize(12);
+        color_button->setFont(font);
+        color_button->setCursor(QCursor(Qt::PointingHandCursor));
+        color_button->setAutoDefault(false);
+        color_button->setFlat(false);
+        Draw = new QPushButton(centralWidget);
+        Draw->setObjectName(QStringLiteral("Draw"));
+        Draw->setGeometry(QRect(910, 730, 141, 41));
+        groupBox = new QGroupBox(centralWidget);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setGeometry(QRect(1100, 10, 211, 351));
+        AngleInfo = new QTextEdit(groupBox);
+        AngleInfo->setObjectName(QStringLiteral("AngleInfo"));
+        AngleInfo->setGeometry(QRect(10, 30, 191, 192));
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(AngleInfo->sizePolicy().hasHeightForWidth());
+        AngleInfo->setSizePolicy(sizePolicy2);
+        AngleInfo->setMaximumSize(QSize(16777215, 200));
+        pushButton = new QPushButton(groupBox);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setGeometry(QRect(20, 260, 51, 51));
+        QFont font1;
+        font1.setPointSize(20);
+        pushButton->setFont(font1);
+        pushButton->setAutoRepeat(true);
+        pushButton->setAutoExclusive(false);
+        pushButton->setAutoRepeatDelay(0);
+        pushButton->setAutoRepeatInterval(40);
+        pushButton_2 = new QPushButton(groupBox);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        pushButton_2->setGeometry(QRect(80, 230, 51, 51));
+        pushButton_2->setFont(font1);
+        pushButton_2->setAutoRepeat(true);
+        pushButton_2->setAutoExclusive(false);
+        pushButton_2->setAutoRepeatDelay(0);
+        pushButton_2->setAutoRepeatInterval(40);
+        pushButton_3 = new QPushButton(groupBox);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        pushButton_3->setGeometry(QRect(140, 260, 51, 51));
+        pushButton_3->setFont(font1);
+        pushButton_3->setAutoRepeat(true);
+        pushButton_3->setAutoRepeatDelay(0);
+        pushButton_3->setAutoRepeatInterval(40);
+        pushButton_4 = new QPushButton(groupBox);
+        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+        pushButton_4->setGeometry(QRect(80, 290, 51, 51));
+        pushButton_4->setFont(font1);
+        pushButton_4->setAutoRepeat(true);
+        pushButton_4->setAutoExclusive(false);
+        pushButton_4->setAutoRepeatDelay(0);
+        pushButton_4->setAutoRepeatInterval(40);
+        groupBox_2 = new QGroupBox(centralWidget);
+        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        groupBox_2->setGeometry(QRect(890, 10, 211, 351));
+        editX = new QLineEdit(groupBox_2);
+        editX->setObjectName(QStringLiteral("editX"));
+        editX->setGeometry(QRect(30, 30, 171, 22));
+        label_2 = new QLabel(groupBox_2);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(10, 60, 21, 21));
+        editY = new QLineEdit(groupBox_2);
+        editY->setObjectName(QStringLiteral("editY"));
+        editY->setGeometry(QRect(30, 60, 171, 22));
+        label = new QLabel(groupBox_2);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(10, 30, 31, 21));
+        editZ = new QLineEdit(groupBox_2);
+        editZ->setObjectName(QStringLiteral("editZ"));
+        editZ->setGeometry(QRect(30, 90, 171, 22));
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setGeometry(QRect(10, 90, 20, 20));
+        rotate = new QPushButton(groupBox_2);
+        rotate->setObjectName(QStringLiteral("rotate"));
+        rotate->setGeometry(QRect(10, 130, 191, 41));
+        label_4 = new QLabel(groupBox_2);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(10, 230, 21, 21));
+        editX_2 = new QLineEdit(groupBox_2);
+        editX_2->setObjectName(QStringLiteral("editX_2"));
+        editX_2->setGeometry(QRect(30, 200, 171, 22));
+        label_5 = new QLabel(groupBox_2);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(10, 200, 31, 21));
+        editY_2 = new QLineEdit(groupBox_2);
+        editY_2->setObjectName(QStringLiteral("editY_2"));
+        editY_2->setGeometry(QRect(30, 230, 171, 22));
+        rotate_2 = new QPushButton(groupBox_2);
+        rotate_2->setObjectName(QStringLiteral("rotate_2"));
+        rotate_2->setGeometry(QRect(10, 290, 191, 41));
+        editZ_2 = new QLineEdit(groupBox_2);
+        editZ_2->setObjectName(QStringLiteral("editZ_2"));
+        editZ_2->setGeometry(QRect(30, 260, 171, 22));
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setGeometry(QRect(10, 260, 20, 20));
+        line = new QFrame(groupBox_2);
+        line->setObjectName(QStringLiteral("line"));
+        line->setGeometry(QRect(10, 180, 191, 16));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        checkBox = new QCheckBox(centralWidget);
+        checkBox->setObjectName(QStringLiteral("checkBox"));
+        checkBox->setGeometry(QRect(900, 440, 161, 19));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
+
+        color_button->setDefault(false);
+
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "Z", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "X", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "Y", nullptr));
-        rotate->setText(QCoreApplication::translate("MainWindow", "change POS", nullptr));
-        Draw->setText(QCoreApplication::translate("MainWindow", "Draw", nullptr));
-        GoButton->setText(QCoreApplication::translate("MainWindow", "\320\237\320\276\320\273\320\265\321\202\320\265\320\273\320\270!", nullptr));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        GoButton->setText(QApplication::translate("MainWindow", "\320\222\320\267\320\273\320\265\321\202", nullptr));
+        color_label->setText(QString());
+        color_button->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 \321\206\320\262\320\265\321\202 \320\270\321\201\321\202\320\276\321\207\320\275\320\270\320\272\320\260", nullptr));
+        Draw->setText(QApplication::translate("MainWindow", "\320\235\320\260\321\200\320\270\321\201\320\276\320\262\320\260\321\202\321\214 \321\201\321\206\320\265\320\275\321\203", nullptr));
+        groupBox->setTitle(QApplication::translate("MainWindow", "\320\243\320\277\321\200\320\260\320\262\320\273\320\265\320\275\320\270\320\265 \320\272\320\260\320\274\320\265\321\200\320\276\320\271", nullptr));
+        pushButton->setText(QApplication::translate("MainWindow", "\342\206\220", nullptr));
+        pushButton_2->setText(QApplication::translate("MainWindow", "\342\206\221", nullptr));
+        pushButton_3->setText(QApplication::translate("MainWindow", "\342\206\222", nullptr));
+        pushButton_4->setText(QApplication::translate("MainWindow", "\342\206\223", nullptr));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "\320\243\320\277\321\200\320\260\320\262\320\273\320\265\320\275\320\270\320\265 \321\200\320\260\320\272\320\265\321\202\320\276\320\271", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "Y", nullptr));
+        label->setText(QApplication::translate("MainWindow", "X", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "Z", nullptr));
+        rotate->setText(QApplication::translate("MainWindow", "\320\237\320\276\320\262\320\265\321\200\320\275\321\203\321\202\321\214", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "Y", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "X", nullptr));
+        rotate_2->setText(QApplication::translate("MainWindow", "\320\237\320\265\321\200\320\265\320\274\320\265\321\201\321\202\320\270\321\202\321\214", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "Z", nullptr));
+        checkBox->setText(QApplication::translate("MainWindow", "\320\264\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\202\320\265\320\275\320\270", nullptr));
     } // retranslateUi
 
 };

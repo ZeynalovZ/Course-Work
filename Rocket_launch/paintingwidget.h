@@ -53,11 +53,12 @@ public:
     void rotateInversedCamera(Point3D &point);
     void rotateLight(Point3D &point);
     void PerspectiveProjection(Point3D &point);
+    void findLightAngles();
 
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
     void fillShadowBuffer(Point3D A, Point3D B, Point3D C);
-    void drawShadow(Point3D P, double z);
+    void drawShadow(Point3D P);
     void changeCameraPos(Point3D &cameraView);
     void changeVisCamera(double x, double y, double z);
     void clear();
@@ -89,6 +90,7 @@ public:
     Point3D firePoint;
 
     bool fillShadow = true;
+    QColor lightColor;
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -102,8 +104,10 @@ private:
     QColor borders_color;
     QColor fill_color;
     QColor bg_color;
-    QColor lightColor;
+
     QColor ambient;
+    QColor Specular;
+    QColor resultColor;
 
 
 

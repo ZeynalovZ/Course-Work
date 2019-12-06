@@ -12,6 +12,7 @@
 #include "rocket.h"
 #include "paintingwidget.h"
 #include <thread>
+#include <QColorDialog>
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +39,16 @@ private slots:
     void updateFire();
 
     void on_GoButton_clicked();
+
+    void on_color_button_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_4_clicked();
 
 public:
     int CameraAngleX = 0;

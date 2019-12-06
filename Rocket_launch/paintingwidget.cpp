@@ -50,6 +50,7 @@ PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
     lightSource.setPosition(lightPoint);
     lightSource.setXAngle(50); // or -50
     WindowAspectRatio = widget_width / widget_height;
+    fillShadow = false;
     //image->setColorTable(Palette);
 
     firePoint.changeAll(X_SIZE, Y_SIZE, 10000);
@@ -70,7 +71,7 @@ void PaintWidget::drawCone(Cone &_cone)
 {
     int angleX = _cone.currentAngleX;
     int angleY = _cone.currentAngleY;
-    painter->setRenderHint(QPainter::Antialiasing, true);
+    //painter->setRenderHint(QPainter::Antialiasing, true);
     Point3D tmp1, tmp2, tmp3;
     Point3D stmp1, stmp2, stmp3;
     int pointIndex1, pointIndex2, pointIndex3;
@@ -142,12 +143,15 @@ void PaintWidget::drawCone(Cone &_cone)
             rotateLight(stmp1);
             rotateLight(stmp2);
             rotateLight(stmp3);
+//            rotateInversedCamera(stmp1);
+//            rotateInversedCamera(stmp2);
+//            rotateInversedCamera(stmp3);
 
             PerspectiveProjection(stmp1);
             PerspectiveProjection(stmp2);
             PerspectiveProjection(stmp3);
 
-            triangleIsVisibleForLight = isTriangleVisible(tmp1, tmp2, tmp3, lightSource.getPosition());
+            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, lightSource.getPosition());
             if (triangleIsVisibleForLight == true)
             {
                 fillShadowBuffer(stmp1, stmp2, stmp3);
@@ -170,9 +174,9 @@ void PaintWidget::drawCone(Cone &_cone)
         //bool triangleIsVisible = true;
         if (triangleIsVisible == true)
         {
-            ambient = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
+            resultColor = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
             //qDebug() << ambient << "ambient";
-            painter->setPen(ambient);
+            painter->setPen(resultColor);
 //            drawTriangleEdge(tmp1, tmp2, tmp3);
             fillObject(tmp1, tmp2, tmp3);
         }
@@ -270,8 +274,7 @@ void PaintWidget::rotateCamera(Point3D &point)
 void PaintWidget::rotateInversedCamera(Point3D &point)
 {
     auto cam_pos = _camera.getPosition();
-    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(cam_pos.x(), cam_pos.y(), 0));
-    point.transform(transform_matrix);
+    std::shared_ptr<Matrix> transform_matrix;
     if (_camera.getXAngle() != 0)
     {
         transform_matrix.reset(new RotateOxMatrix(_camera.getXAngle() * M_PI / TO_RAD_180));
@@ -293,10 +296,24 @@ void PaintWidget::rotateInversedCamera(Point3D &point)
 void PaintWidget::rotateLight(Point3D &point)
 {
     auto cam_pos = lightSource.getPosition();
-    std::shared_ptr<Matrix> transform_matrix(new MoveMatrix(0, 0,0));
+    std::shared_ptr<Matrix> transform_matrix;
     //point.transform(transform_matrix);
-    transform_matrix.reset(new RotateOxMatrix(lightSource.getXAngle() * M_PI / TO_RAD_180));
-    point.transform(transform_matrix);
+    if (lightSource.getXAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOxMatrix((lightSource.getXAngle()) * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
+    if (lightSource.getYAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOyMatrix(lightSource.getYAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
+
+    if (lightSource.getZAngle() != 0)
+    {
+        transform_matrix.reset(new RotateOzMatrix(lightSource.getZAngle() * M_PI / TO_RAD_180));
+        point.transform(transform_matrix);
+    }
 }
 
 void PaintWidget::PerspectiveProjection(Point3D &point)
@@ -315,7 +332,12 @@ void PaintWidget::PerspectiveProjection(Point3D &point)
 //    double far = 120;
 //    double fovy = 90;
 //    std::shared_ptr<Matrix> transform_matrix(new perspectiveProjection(near, far, fovy, WindowAspectRatio));
-//    point.transform(transform_matrix);
+    //    point.transform(transform_matrix);
+}
+
+void PaintWidget::findLightAngles()
+{
+
 }
 
 void PaintWidget::changeCameraPos(Point3D &cameraView)
@@ -351,11 +373,10 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
     _camera.setXAngle(angleX);
     _camera.setYAngle(angleY);
     _camera.setZAngle(angleZ);
-    fillShadow = true;
-    /*
-    lightSource.setXAngle(-angleX);
-    lightSource.setYAngle(-angleY);
-    lightSource.setZAngle(-angleZ);*/
+    //fillShadow = true;
+//    lightSource.setXAngle(angleX);
+//    lightSource.setYAngle(-angleY);
+//    lightSource.setZAngle(-angleZ);
 
 }
 
@@ -511,7 +532,10 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
                     {
                         ShadowPoint.changeAll(x - X_SIZE, y - Y_SIZE, z - 10000);
                         ZBuffer.zbuffer[x + y * WIDTH] = z;
-                        //drawShadow(ShadowPoint, z);
+                        if (fillShadow == true)
+                        {
+                            drawShadow(ShadowPoint);
+                        }
                         painter->drawPoint(x, y);
                     }
 //                    painter->drawPoint(x, y);
@@ -591,7 +615,7 @@ void PaintWidget::fillShadowBuffer(Point3D A, Point3D B, Point3D C)
 
 }
 
-void PaintWidget::drawShadow(Point3D P, double z)
+void PaintWidget::drawShadow(Point3D P)
 {
     rotateInversedCamera(P);
 
@@ -602,20 +626,20 @@ void PaintWidget::drawShadow(Point3D P, double z)
     P.setY(P.y() + Y_SIZE);
     P.setZ(P.z() + 10000);
 
-    painter->setPen(ambient);
+    painter->setPen(resultColor);
     if (P.x() + P.y() * WIDTH >= 0 && P.x() + P.y() * WIDTH < WIDTH * HEIGHT)
     {
         //qDebug() << ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] << z;
-            if( ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] - 50 > P.z())
-            {
-                painter->setPen(QColor(Qt::darkBlue));
-            }
+        if (ZBufferShadows.zbuffer[int(P.x()) + int(P.y()) * WIDTH] - 60 > P.z())
+        {
+            painter->setPen(ambient);
+        }
 
 //                    painter->drawPoint(x, y);
     }
     else
     {
-//        qDebug() << "out of" << P.x() << P.y() << P.z();
+        //qDebug() << "out of" << P.x() << P.y() << P.z();
     }
 //    painter->drawPoint(P.x(), P.y());
 
@@ -666,7 +690,7 @@ void PaintWidget::makeFire()
 
     //painter->drawImage(0, 0, RocketFire.framebuffer);
     RocketFire.update(*painter, firePoint, ZBuffer, *image);
-    firePoint.setY(firePoint.y() - 1);
+
     //y_down--;
     update();
     //RocketFire.update();
@@ -753,6 +777,10 @@ QColor PaintWidget::ambientLightning(Point3D A, Point3D B, Point3D C, QColor obj
     reda *= AMBIENT;
     greena *= AMBIENT;
     bluea *= AMBIENT;
+
+    ambient.setRed(red * reda);
+    ambient.setGreen(green * greena);
+    ambient.setBlue(blue * bluea);
 
     reda += intensity;
     greena += intensity;

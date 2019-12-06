@@ -29,28 +29,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timerForRocket, SIGNAL(timeout()), this, SLOT(MoveRocket()));
     connect(timerForFire, SIGNAL(timeout()), this, SLOT(updateFire()));
 
-    // Создадим ракету передав в нее центр основания ракеты и ее масштаб
-    Point3D rocketCenter(50, 0, 0);
-    _rocket.createRocket(rocketCenter, SCALE);
-    rocketCenter.changeAll(-100, 0, 0);
-    //_rocket2.createRocket(rocketCenter, SCALE * 2);
-    Point3D coneCenter(150, 150, 50);
-    //Отдельный цилиндр рядом с ракетой
-    QColor treeColor;
-    treeColor.setRed(139);
-    treeColor.setGreen(69);
-    treeColor.setBlue(19);
-    cone.createCone(coneCenter, 30, 30, 100, 10, treeColor);
-    coneCenter.changeAll(-150, 150, 150);
-    cone1.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::darkGreen));
 
-    coneCenter.changeAll(0, 1000, 800);
-    LightCone.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::white));
 
-    cameraPosition.setX(0);
-    cameraPosition.setY(0);
-    cameraPosition.setZ(1000);
-    cameraVisPosition.changeAll(0, 0, 1000);
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, Qt::yellow);
+
+    ui->color_label->setAutoFillBackground(true);
+    ui->color_label->setPalette(Pal);
+
 
     // todo
 
@@ -183,29 +169,31 @@ void MainWindow::render()
 
     //scene->makeFire();
 
-
+    if (ui->checkBox->isChecked())
+    {
+        scene->fillShadow = true;
+    }
+    else
+    {
+        scene->fillShadow = false;
+    }
     Point3D point(0, 0, -25); // launchpad center
     scene->_camera.setPosition(cameraPosition);
     //sqDebug() << scene->_visibleCamera.x() << scene->_visibleCamera.y() << scene->_visibleCamera.z() << "dots";
     scene->ZBuffer.fillbuffer();
-    if (scene->fillShadow == true)
-    {
-        scene->ZBufferShadows.fillbuffer();
-    }
+    scene->ZBufferShadows.fillbuffer();
 
 
-    scene->drawCone(cone);
-    scene->drawCone(cone1);
+    //scene->drawCone(cone);
+    //scene->drawCone(cone1);
 
     // TODO: rotate firepoint
     //scene->rotateCamera(scene->firePoint);
 
 
     scene->drawRocket(_rocket);
-
-
     scene->drawLaunchPad(point);
-    scene->fillShadow = false;
+    //scene->fillShadow = false;
     //scene->drawRocket(_rocket2);
 
     //scene->drawCone(LightCone);
@@ -237,6 +225,29 @@ void MainWindow::render()
 
 void MainWindow::on_Draw_clicked()
 {
+    scene->clear();
+    // Создадим ракету передав в нее центр основания ракеты и ее масштаб
+    Point3D rocketCenter(50, 0, 0);
+    _rocket.createRocket(rocketCenter, SCALE);
+    rocketCenter.changeAll(-100, 0, 0);
+    //_rocket2.createRocket(rocketCenter, SCALE * 2);
+    Point3D coneCenter(150, 150, 50);
+    //Отдельный цилиндр рядом с ракетой
+    QColor treeColor;
+    treeColor.setRed(139);
+    treeColor.setGreen(69);
+    treeColor.setBlue(19);
+    cone.createCone(coneCenter, 30, 30, 100, 10, treeColor);
+    coneCenter.changeAll(-150, 150, 150);
+    cone1.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::darkGreen));
+
+    coneCenter.changeAll(0, 1000, 800);
+    LightCone.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::white));
+
+    cameraPosition.setX(0);
+    cameraPosition.setY(0);
+    cameraPosition.setZ(1000);
+    cameraVisPosition.changeAll(0, 0, 1000);
     render();
 }
 
@@ -260,16 +271,17 @@ void MainWindow::MoveRocket()
     //qDebug() << "moving ...";
     //thread tr(_rocket.moveRocket());
     _rocket.moveRocket();
-//    std::thread tr1(&rocket::moveRocket, std::ref(_rocket));
-//    std::thread tr2(&MainWindow::render, this);
-//    std::thread tr3(&PaintWidget::makeFire, std::ref(scene));
+    //    std::thread tr1(&rocket::moveRocket, std::ref(_rocket));
+    //    std::thread tr2(&MainWindow::render, this);
+    //    std::thread tr3(&PaintWidget::makeFire, std::ref(scene));
     render();
     scene->makeFire();
+    scene->firePoint.setY(scene->firePoint.y() - 1);
     //scene->PerspectiveProjection(scene->firePoint);
 
-//    tr1.join();
-//    tr2.join();
-//    tr3.join();
+    //    tr1.join();
+    //    tr2.join();
+    //    tr3.join();
     if (!timerForRocket->isActive())
     {
         if (timer > 1)
@@ -282,11 +294,11 @@ void MainWindow::MoveRocket()
 
 void MainWindow::updateFire()
 {
-//    scene->makeFire();
-//    if (!timerForFire->isActive())
-//    {
-//        timerForFire->start(timer);
-//    }
+    //    scene->makeFire();
+    //    if (!timerForFire->isActive())
+    //    {
+    //        timerForFire->start(timer);
+    //    }
 }
 /*
 // добавить камеру,
@@ -305,4 +317,43 @@ void MainWindow::on_GoButton_clicked()
 
     timerForFire->start(timer);
     //render();
+}
+
+void MainWindow::on_color_button_clicked()
+{
+    scene->lightColor = QColorDialog::getColor(scene->lightColor, this);
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, scene->lightColor);
+    ui->color_label->setAutoFillBackground(true);
+    ui->color_label->setPalette(Pal);
+    ui->color_label->show();
+    render();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    CameraAngleX += 5;
+    scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
+    render();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    CameraAngleY += 5;
+    scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
+    render();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    CameraAngleY -= 5;
+    scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
+    render();
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    CameraAngleX -= 5;
+    scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
+    render();
 }
