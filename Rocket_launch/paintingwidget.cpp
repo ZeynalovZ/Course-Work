@@ -48,7 +48,7 @@ PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
     //printTransformedMatrix(camera);
     lightPoint = Point3D(0, 1000, 1000);
     lightSource.setPosition(lightPoint);
-    lightSource.setXAngle(50); // or -50
+    lightSource.setXAngle(45); // or -50
     WindowAspectRatio = widget_width / widget_height;
     fillShadow = false;
     //image->setColorTable(Palette);
@@ -78,6 +78,7 @@ void PaintWidget::drawCone(Cone &_cone)
     bool triangleIsVisible, triangleIsVisibleForLight;
     Point3D tmpLight = lightSource.getPosition();
     rotateCamera(tmpLight);
+    //findLightAngles(tmpLight);
     //rotateLight(tmpLight);
     // вычисление усредненных нормелей
 //    vertexNormals.clear();
@@ -107,18 +108,10 @@ void PaintWidget::drawCone(Cone &_cone)
         tmp1 = triangle.A;
         tmp2 = triangle.B;
         tmp3 = triangle.C;
-
-        stmp1 = triangle.A;
-        stmp2 = triangle.B;
-        stmp3 = triangle.C;
-
-
-
 //        qDebug() << tmp1.pointIndex << "point index A";
 //        qDebug() << tmp2.pointIndex << "point index B";
 //        qDebug() << tmp3.pointIndex << "point index C";
         //printPoints1(tmp1, tmp2, tmp3);
-
         tmp1.rotateX(angleX);
         tmp2.rotateX(angleX);
         tmp3.rotateX(angleX);
@@ -126,7 +119,6 @@ void PaintWidget::drawCone(Cone &_cone)
         tmp1.rotateY(angleY);
         tmp2.rotateY(angleY);
         tmp3.rotateY(angleY);
-
 
         pointIndex1 = tmp1.pointIndex;
         pointIndex2 = tmp2.pointIndex;
@@ -136,30 +128,36 @@ void PaintWidget::drawCone(Cone &_cone)
         rotateCamera(tmp2);
         rotateCamera(tmp3);
 
-
-
         if (fillShadow == true)
         {
+            //qDebug() << lightSource.getXAngle() << lightSource.getYAngle() << lightSource.getZAngle() << "light";
+            stmp1 = triangle.A;
+            stmp2 = triangle.B;
+            stmp3 = triangle.C;
+
             rotateLight(stmp1);
             rotateLight(stmp2);
             rotateLight(stmp3);
-//            rotateInversedCamera(stmp1);
-//            rotateInversedCamera(stmp2);
-//            rotateInversedCamera(stmp3);
 
             PerspectiveProjection(stmp1);
             PerspectiveProjection(stmp2);
             PerspectiveProjection(stmp3);
+//            stmp1.transform(matrixInvX);
+//            stmp2.transform(matrixInvY);
+//            stmp3.transform(matrixInvZ);
 
-            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, tmpLight);
-            if (triangleIsVisibleForLight == true)
-            {
-                fillShadowBuffer(stmp1, stmp2, stmp3);
-    //            painter->setPen(QColor(Qt::red));
 
-            }
+            fillShadowBuffer(stmp1, stmp2, stmp3);
+//            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, tmpLight);
+//            if (triangleIsVisibleForLight == true)
+//            {
+//                ;
+//    //            painter->setPen(QColor(Qt::red));
+
+//            }
         }
-        //drawTriangleEdge(stmp1, stmp2, stmp3);
+//        painter->setPen(QColor(Qt::red));
+//        drawTriangleEdge(stmp1, stmp2, stmp3);
 
         PerspectiveProjection(tmp1);
         PerspectiveProjection(tmp2);
@@ -177,7 +175,7 @@ void PaintWidget::drawCone(Cone &_cone)
             resultColor = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
             //qDebug() << ambient << "ambient";
             painter->setPen(resultColor);
-//            drawTriangleEdge(tmp1, tmp2, tmp3);
+            //drawTriangleEdge(tmp1, tmp2, tmp3);
             fillObject(tmp1, tmp2, tmp3);
         }
         else
@@ -255,19 +253,16 @@ void PaintWidget::rotateCamera(Point3D &point)
     point.transform(transform_matrix);
     if (_camera.getXAngle() != 0)
     {
-        transform_matrix.reset(new RotateOxMatrix(-_camera.getXAngle() * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixCameraX);
     }
     if (_camera.getYAngle() != 0)
     {
-        transform_matrix.reset(new RotateOyMatrix(-_camera.getYAngle() * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixCameraY);
     }
 
     if(_camera.getZAngle() != 0)
     {
-        transform_matrix.reset(new RotateOzMatrix(-_camera.getZAngle() * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixCameraZ);
     }
 }
 
@@ -296,23 +291,18 @@ void PaintWidget::rotateInversedCamera(Point3D &point)
 void PaintWidget::rotateLight(Point3D &point)
 {
     auto cam_pos = lightSource.getPosition();
-    std::shared_ptr<Matrix> transform_matrix;
-    //point.transform(transform_matrix);
     if (lightSource.getXAngle() != 0)
     {
-        transform_matrix.reset(new RotateOxMatrix((lightSource.getXAngle()) * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixLightX);
     }
-    if (lightSource.getYAngle() != 0)
+    if (_camera.getYAngle() != 0)
     {
-        transform_matrix.reset(new RotateOyMatrix(lightSource.getYAngle() * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixLightY);
     }
 
-    if (lightSource.getZAngle() != 0)
+    if (_camera.getZAngle() != 0)
     {
-        transform_matrix.reset(new RotateOzMatrix(lightSource.getZAngle() * M_PI / TO_RAD_180));
-        point.transform(transform_matrix);
+        point.transform(matrixLightZ);
     }
 }
 
@@ -335,9 +325,35 @@ void PaintWidget::PerspectiveProjection(Point3D &point)
     //    point.transform(transform_matrix);
 }
 
-void PaintWidget::findLightAngles()
+void PaintWidget::findLightAngles(Point3D &P)
 {
+    //qDebug() << P.x() << P.y() << P.z() << "point";
+    Vector vec_view(0, 0, -1);
+    Vector vecProjX(0, -P.y(), -P.z());
+    Vector vecProjY(-P.x(), 0, -P.z());
+    Vector vecProjZ(-P.x(), -P.y(), 0);
 
+    vecProjX.normalize();
+    vecProjY.normalize();
+    vecProjZ.normalize();
+    double angleX = crossProductScalar(vec_view, vecProjX);
+    double angleY = crossProductScalar(vec_view, vecProjY);
+    double angleZ = crossProductScalar(vec_view, vecProjZ);
+    angleX /= vecProjX.vectorLength();
+    angleY /= vecProjY.vectorLength();
+    angleZ /= vecProjZ.vectorLength();
+
+    angleX = acos(angleX);
+    angleY = acos(angleY);
+    angleZ = acos(angleZ);
+
+    angleX = angleX * TO_RAD_180 / M_PI;
+    angleY = angleY * TO_RAD_180 / M_PI;
+    angleZ = angleZ * TO_RAD_180 / M_PI;
+    qDebug() << angleX << angleY << angleZ;
+//    lightSource.setXAngle(angleX);
+//    lightSource.setYAngle(angleY);
+//    lightSource.setZAngle(angleZ);
 }
 
 void PaintWidget::changeCameraPos(Point3D &cameraView)
@@ -370,13 +386,34 @@ void PaintWidget::changeVisCamera(double x, double y, double z)
 
 void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
 {
+    // TODO:
+    // добавить проверку на углы > 30 и <30 для корректного отображения теней
+    // добавить интерполяцию нормалей или интенсивностей
     _camera.setXAngle(angleX);
     _camera.setYAngle(angleY);
     _camera.setZAngle(angleZ);
     //fillShadow = true;
 //    lightSource.setXAngle(angleX);
-    lightSource.setYAngle(angleY);
-    lightSource.setZAngle(angleZ);
+//    lightSource.setYAngle(angleY);
+//    lightSource.setZAngle(angleZ);
+
+    matrixCameraX.reset(new RotateOxMatrix(-angleX * M_PI / TO_RAD_180));
+    matrixCameraY.reset(new RotateOyMatrix(-angleY * M_PI / TO_RAD_180));
+    matrixCameraZ.reset(new RotateOzMatrix(-angleZ * M_PI / TO_RAD_180));
+
+    matrixInvX.reset(new RotateOxMatrix(angleX * M_PI / TO_RAD_180));
+    matrixInvY.reset(new RotateOyMatrix(angleY * M_PI / TO_RAD_180));
+    matrixInvZ.reset(new RotateOzMatrix(angleZ * M_PI / TO_RAD_180));
+
+    matrixLightX.reset(new RotateOxMatrix(lightSource.getXAngle() * M_PI / TO_RAD_180));
+    matrixLightY.reset(new RotateOyMatrix(lightSource.getYAngle() * M_PI / TO_RAD_180));
+    matrixLightZ.reset(new RotateOzMatrix(lightSource.getZAngle() * M_PI / TO_RAD_180));
+
+    Point3D tmpLight = lightSource.getPosition();
+    //qDebug() << tmpLight.x() << tmpLight.y() << "before";
+    rotateCamera(tmpLight);
+    //qDebug() << tmpLight.x() << tmpLight.y() << "after";
+    findLightAngles(tmpLight);
 
 }
 
@@ -476,9 +513,10 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     change(B);
     change(C);
 
-//    Vector aNormal = vertexNormals[A.pointIndex];
-//    Vector bNormal = vertexNormals[B.pointIndex];
-//    Vector cNormal = vertexNormals[C.pointIndex];
+    Vector aNormal = vertexNormals[A.pointIndex];
+    Vector bNormal = vertexNormals[B.pointIndex];
+    Vector cNormal = vertexNormals[C.pointIndex];
+    Vector scanA, scanB, scanP;
 
     //qDebug() << aNormal.x << bNormal.x << cNormal.x << "normal";
 
@@ -522,7 +560,13 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
             if (BarCoor.b1 >= 0 && BarCoor.b1 <= 1 && BarCoor.b2 >= 0 && BarCoor.b2 <= 1 &&
                     BarCoor.b3 >= 0 && BarCoor.b3 <=1)
             {
-
+                // ошибка тут
+//                scanA = aNormal * ((y - B.y()) / (A.y() - B.y())) +
+//                        bNormal * ((A.y() - y) / (A.y() - B.y()));
+//                scanB = aNormal * ((y - C.y()) / (A.y() - C.y())) +
+//                        cNormal * ((A.y() - y) / (A.y() - C.y()));
+//                scanP = scanA * ((scanB.x - x) / (scanB.x - scanA.x)) +
+//                        scanB * ((x - scanA.x) / (scanB.x - scanA.x));
                 z = 1 / (BarCoor.b1 * A.z() + BarCoor.b2 * B.z() + BarCoor.b3 * C.z());
                 //qDebug() << A.z() << B.z() << C.z() << BarCoor.b1 << BarCoor.b2 << BarCoor.b3 << z << "====";
                 if (x + y * WIDTH >= 0 && x + y * WIDTH < WIDTH * HEIGHT)
@@ -617,8 +661,11 @@ void PaintWidget::fillShadowBuffer(Point3D A, Point3D B, Point3D C)
 
 void PaintWidget::drawShadow(Point3D P)
 {
-    rotateInversedCamera(P);
+    //rotateInversedCamera(P);
 
+    P.transform(matrixInvX);
+    P.transform(matrixInvY);
+    P.transform(matrixInvZ);
     rotateLight(P);
     //qDebug() << "Point" << P.x() << P.y() << P.z();
 
@@ -742,6 +789,7 @@ QColor PaintWidget::ambientLightning(Point3D A, Point3D B, Point3D C, QColor obj
     Vector V2(B, C);
     Vector Vn = crossProduct(V1, V2);
     Vn.normalize();
+    return getColor(Vn, objColor, LightPoint);
 //    Vn = vertexNormals[A.pointIndex];
 //    qDebug() << A.pointIndex << "point index A";
 //    qDebug() << B.pointIndex << "point index B";
@@ -754,12 +802,18 @@ QColor PaintWidget::ambientLightning(Point3D A, Point3D B, Point3D C, QColor obj
     //qDebug() << Vn.x << Vn.y << Vn.z << "Vn";
 //    qDebug() << lightPoint.x() << lightPoint.y() << lightPoint.z() << "lightpos";
 
+
+
+}
+
+QColor PaintWidget::getColor(Vector normal, QColor objColor, Point3D LightPoint)
+{
     Point3D Null(0, 0, 0);
     Vector lightVector(LightPoint, Null);
     lightVector.normalize();
     //qDebug() << CameraVector.x << CameraVector.y << CameraVector.z;
 
-    double intensity = crossProductScalar(lightVector, Vn);
+    double intensity = crossProductScalar(lightVector, normal);
 //    qDebug() << intensity << "intensity";
     intensity = max(intensity, 0);
 
@@ -812,7 +866,6 @@ QColor PaintWidget::ambientLightning(Point3D A, Point3D B, Point3D C, QColor obj
     //tmp.setAlphaF(intensity);
 
     return  tmp;
-
 
 }
 

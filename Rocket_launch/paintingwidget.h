@@ -53,7 +53,7 @@ public:
     void rotateInversedCamera(Point3D &point);
     void rotateLight(Point3D &point);
     void PerspectiveProjection(Point3D &point);
-    void findLightAngles();
+    void findLightAngles(Point3D &P);
 
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
@@ -66,7 +66,7 @@ public:
     void makeFire();
     bool isTriangleVisible(Point3D A, Point3D B, Point3D C, Point3D visiblePoint);
     QColor ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor, Point3D LightPoint);
-
+    QColor getColor(Vector normal, QColor objColor, Point3D LightPoint);
 
     Camera _camera;
     Camera _visibleCamera;
@@ -91,6 +91,17 @@ public:
 
     bool fillShadow = true;
     QColor lightColor;
+
+    // matrixes
+    std::shared_ptr<Matrix> matrixInvX;
+    std::shared_ptr<Matrix> matrixInvY;
+    std::shared_ptr<Matrix> matrixInvZ;
+    std::shared_ptr<Matrix> matrixLightX;
+    std::shared_ptr<Matrix> matrixLightY;
+    std::shared_ptr<Matrix> matrixLightZ;
+    std::shared_ptr<Matrix> matrixCameraX;
+    std::shared_ptr<Matrix> matrixCameraY;
+    std::shared_ptr<Matrix> matrixCameraZ;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

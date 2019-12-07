@@ -155,9 +155,6 @@ void MainWindow::render()
 
     scene->clear();
 
-
-
-
     //    Point3D cam_pos = scene->_camera.getPosition();
     //    scene->changeCameraPos(cam_pos);
     //    scene->_visibleCamera.setPosition(cam_pos);
@@ -184,7 +181,7 @@ void MainWindow::render()
     scene->ZBufferShadows.fillbuffer();
 
 
-    //scene->drawCone(cone);
+    scene->drawCone(cone);
     //scene->drawCone(cone1);
 
     // TODO: rotate firepoint
