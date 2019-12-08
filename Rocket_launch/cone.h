@@ -46,7 +46,6 @@ public:
     edges Edges;
     QColor ObjectColor;
     int index = 0;
-
 };
 
 #endif // CONE_H

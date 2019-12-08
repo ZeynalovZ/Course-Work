@@ -295,12 +295,12 @@ void PaintWidget::rotateLight(Point3D &point)
     {
         point.transform(matrixLightX);
     }
-    if (_camera.getYAngle() != 0)
+    if (lightSource.getYAngle() != 0)
     {
         point.transform(matrixLightY);
     }
 
-    if (_camera.getZAngle() != 0)
+    if (lightSource.getZAngle() != 0)
     {
         point.transform(matrixLightZ);
     }
@@ -339,9 +339,9 @@ void PaintWidget::findLightAngles(Point3D &P)
     double angleX = crossProductScalar(vec_view, vecProjX);
     double angleY = crossProductScalar(vec_view, vecProjY);
     double angleZ = crossProductScalar(vec_view, vecProjZ);
-    angleX /= vecProjX.vectorLength();
-    angleY /= vecProjY.vectorLength();
-    angleZ /= vecProjZ.vectorLength();
+//    angleX /= vecProjX.vectorLength();
+//    angleY /= vecProjY.vectorLength();
+//    angleZ /= vecProjZ.vectorLength();
 
     angleX = acos(angleX);
     angleY = acos(angleY);
@@ -350,10 +350,18 @@ void PaintWidget::findLightAngles(Point3D &P)
     angleX = angleX * TO_RAD_180 / M_PI;
     angleY = angleY * TO_RAD_180 / M_PI;
     angleZ = angleZ * TO_RAD_180 / M_PI;
+    if (P.x() < 0)
+    {
+        angleY = -angleY;
+    }
+    if (P.y() < 0)
+    {
+        angleX = -angleX;
+    }
     qDebug() << angleX << angleY << angleZ;
-//    lightSource.setXAngle(angleX);
-//    lightSource.setYAngle(angleY);
-//    lightSource.setZAngle(angleZ);
+    //lightSource.setXAngle(angleX);
+    lightSource.setYAngle(-angleY);
+    lightSource.setZAngle(angleZ);
 }
 
 void PaintWidget::changeCameraPos(Point3D &cameraView)
@@ -410,6 +418,7 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
     matrixLightZ.reset(new RotateOzMatrix(lightSource.getZAngle() * M_PI / TO_RAD_180));
 
     Point3D tmpLight = lightSource.getPosition();
+    //lightSource.setYAngle(angleY);
     //qDebug() << tmpLight.x() << tmpLight.y() << "before";
     rotateCamera(tmpLight);
     //qDebug() << tmpLight.x() << tmpLight.y() << "after";
@@ -533,20 +542,8 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     xmin = getMinFor3(x1, x2, x3);
     ymax = getMaxFor3(y1, y2, y3);
     ymin = getMinFor3(y1, y2, y3);
-
-    //qDebug() << xmin << xmax << ymin << ymax << "BB";
     Point3D P, ShadowPoint;
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
-//    if (square < EPS && square > -EPS)
-//    {
-//        qDebug() << square;
-//        qDebug() << A.x() - X_SIZE << B.x() - X_SIZE << C.x() - X_SIZE << "x";
-//        qDebug() << A.y() - Y_SIZE << B.y() - Y_SIZE << C.y() - Y_SIZE << "y";
-//    }
-//    if (A.z() == 0 || B.z() == 0 || C.z() ==0)
-//    {
-//        qDebug() << A.z() << B.z() << C.z() << "zeors z";
-//    }
     A.setZ(1. / A.z());
     B.setZ(1. / B.z());
     C.setZ(1. / C.z());
@@ -560,7 +557,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
             if (BarCoor.b1 >= 0 && BarCoor.b1 <= 1 && BarCoor.b2 >= 0 && BarCoor.b2 <= 1 &&
                     BarCoor.b3 >= 0 && BarCoor.b3 <=1)
             {
-                // ошибка тут
+                // ошибка Фонга тут
 //                scanA = aNormal * ((y - B.y()) / (A.y() - B.y())) +
 //                        bNormal * ((A.y() - y) / (A.y() - B.y()));
 //                scanB = aNormal * ((y - C.y()) / (A.y() - C.y())) +
@@ -568,10 +565,8 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
 //                scanP = scanA * ((scanB.x - x) / (scanB.x - scanA.x)) +
 //                        scanB * ((x - scanA.x) / (scanB.x - scanA.x));
                 z = 1 / (BarCoor.b1 * A.z() + BarCoor.b2 * B.z() + BarCoor.b3 * C.z());
-                //qDebug() << A.z() << B.z() << C.z() << BarCoor.b1 << BarCoor.b2 << BarCoor.b3 << z << "====";
                 if (x + y * WIDTH >= 0 && x + y * WIDTH < WIDTH * HEIGHT)
                 {
-                    //qDebug() << z << " is Z";
                     if (z > ZBuffer.zbuffer[x + y * WIDTH])
                     {
                         ShadowPoint.changeAll(x - X_SIZE, y - Y_SIZE, z - 10000);
@@ -582,7 +577,6 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
                         }
                         painter->drawPoint(x, y);
                     }
-//                    painter->drawPoint(x, y);
                 }
                 else
                 {

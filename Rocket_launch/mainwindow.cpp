@@ -181,7 +181,7 @@ void MainWindow::render()
     scene->ZBufferShadows.fillbuffer();
 
 
-    scene->drawCone(cone);
+    //scene->drawCone(cone);
     //scene->drawCone(cone1);
 
     // TODO: rotate firepoint

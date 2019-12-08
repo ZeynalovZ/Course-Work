@@ -98,10 +98,8 @@ class fire
 public:
     fire();
     QImage framebuffer;
-    QPixmap pixmap;
 public slots:
     void update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage &image);
-
 };
 
 #endif // FIRE_H
