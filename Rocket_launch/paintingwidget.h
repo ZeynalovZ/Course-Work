@@ -22,6 +22,7 @@
 #define WIDTH  850
 #define HEIGHT  715
 
+enum drawDirect {forward, back};
 
 
 struct BarycentricCoords
@@ -45,14 +46,14 @@ public:
     void drawCone(Cone &_cone);
     void drawRocket(rocket &_rocket);
     void drawLine3D(Point3D first, Point3D second);
-    void drawLaunchPad(Point3D point);
+    void drawLaunchPad(Point3D point, int n);
     void drawTriangleEdge(Point3D a, Point3D b, Point3D c);
     void computeVertexNormals(Point3D A, Point3D B, Point3D C);
 
     void rotateCamera(Point3D &point);
     void rotateInversedCamera(Point3D &point);
     void rotateLight(Point3D &point);
-    void PerspectiveProjection(Point3D &point);
+    void PerspectiveProjection(Point3D &point, drawDirect d);
     void findLightAngles(Point3D &P);
 
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
@@ -81,7 +82,7 @@ public:
     double WindowAspectRatio;
     int x_down = 200, y_down = 200;
     std::vector<Vector> vertexNormals;
-
+    std::vector<double> vertexIntensity;
 
     Point3D CameraPosition;
     Vector vUp;
@@ -166,6 +167,8 @@ static QVector<QRgb> Palette = {
     qRgb(0xFF,0xFF,0xFF),
     qRgb(0x0C, 0xC4, 0xFF)
 };
+
+
 
 
 #endif // DRAWWIDGET_H

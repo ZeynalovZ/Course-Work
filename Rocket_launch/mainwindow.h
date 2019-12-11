@@ -50,6 +50,8 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_LightButton_clicked();
+
 public:
     int CameraAngleX = 0;
     int CameraAngleY = 0;
@@ -57,6 +59,8 @@ public:
     int timer = 50;
     int timeForFire = 10;
 
+    int edgesCountOfRocket = 3;
+    int edgesCountOfLP = 3;
 private:
     Ui::MainWindow *ui;
     rocket _rocket;

@@ -61,7 +61,7 @@ void fire::update(QPainter &painter, Point3D Point, DepthBuffer Zbuffer, QImage 
     int i = 0;
     int tmp_x, tmp_y;
     int clr;
-    Point.setX(Point.x() + 12);
+    Point.setX(Point.x());
     for(int y = 0; y < FIRE_HEIGHT; y++)
     {
         for(int x = 0; x < FIRE_WIDTH; x++)

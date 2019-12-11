@@ -189,9 +189,15 @@ void MainWindow::render()
 
 
     scene->drawRocket(_rocket);
-    scene->drawLaunchPad(point);
+    //scene->drawRocket(_rocket2);
+    scene->drawLaunchPad(point, edgesCountOfLP);
+
+
+
     //scene->fillShadow = false;
     //scene->drawRocket(_rocket2);
+
+    //scene->drawCone(LightCone);
 
     //scene->drawCone(LightCone);
 
@@ -223,11 +229,14 @@ void MainWindow::render()
 void MainWindow::on_Draw_clicked()
 {
     scene->clear();
+    edgesCountOfRocket = ui->spinBox->value();
+    edgesCountOfLP = ui->spinBox_2->value();
+    qDebug() << edgesCountOfRocket << edgesCountOfLP;
     // Создадим ракету передав в нее центр основания ракеты и ее масштаб
-    Point3D rocketCenter(50, 0, 0);
-    _rocket.createRocket(rocketCenter, SCALE);
+    Point3D rocketCenter(0, 0, 0);
+    _rocket.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
     rocketCenter.changeAll(-100, 0, 0);
-    //_rocket2.createRocket(rocketCenter, SCALE * 2);
+    _rocket2.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
     Point3D coneCenter(150, 150, 50);
     //Отдельный цилиндр рядом с ракетой
     QColor treeColor;
@@ -257,10 +266,14 @@ void MainWindow::on_rotate_clicked()
     int angleX = x.toDouble(&ok1);
     QString y = ui->editY->text();
     int angleY = y.toDouble(&ok2);
-    _rocket.rotateX(angleX);
-    _rocket.rotateY(angleY);
+    if (ok1 && ok2)
+    {
+        _rocket.rotateX(angleX);
+        _rocket.rotateY(angleY);
 
-    render();
+        render();
+    }
+
 }
 
 void MainWindow::MoveRocket()
@@ -268,6 +281,7 @@ void MainWindow::MoveRocket()
     //qDebug() << "moving ...";
     //thread tr(_rocket.moveRocket());
     _rocket.moveRocket();
+    _rocket2.moveRocket();
     //    std::thread tr1(&rocket::moveRocket, std::ref(_rocket));
     //    std::thread tr2(&MainWindow::render, this);
     //    std::thread tr3(&PaintWidget::makeFire, std::ref(scene));
@@ -353,4 +367,27 @@ void MainWindow::on_pushButton_4_clicked()
     CameraAngleX -= 5;
     scene->SetCameraAngleS(CameraAngleX, CameraAngleY, CameraAngleZ);
     render();
+}
+
+void MainWindow::on_LightButton_clicked()
+{
+    bool ok1 = true, ok2 = true, ok3 = true;
+
+    QString x = ui->editX_3->text();
+    int X = x.toDouble(&ok1);
+    QString y = ui->editY_3->text();
+    int Y = y.toDouble(&ok2);
+    QString z = ui->editZ_3->text();
+    int Z = z.toDouble(&ok3);
+    if (ok1 && ok2 && ok3)
+    {
+        Point3D P(X, Y, Z);
+        scene->lightSource.setPosition(P);
+        scene->findLightAngles(P);
+        render();
+    }
+    else
+    {
+        qDebug() << "light input is not right";
+    }
 }

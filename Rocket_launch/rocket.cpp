@@ -1,7 +1,7 @@
 #include "rocket.h"
 #include <QDebug>
 #define SCALE 10
-#define EdgesCircleCount 50
+//#define EdgesCircleCount 50
 rocket::rocket(Point3D center)
 {
 
@@ -12,8 +12,9 @@ void rocket::addModule(Cone &_cone)
     this->modules.push_back(_cone);
 }
 
-void rocket::createRocket(Point3D RocketCenter, qreal Scale)
+void rocket::createRocket(Point3D RocketCenter, qreal Scale, int n)
 {
+    int EdgesCircleCount = n;
     this->scale = Scale;
     this->rocketCenter = RocketCenter;
     Cone cone0, cone1, cone2, cone3, cone4, cone5;

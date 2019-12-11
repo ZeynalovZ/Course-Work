@@ -18,7 +18,7 @@ public:
 
     void drawRocket();
 
-    void createRocket(Point3D RocketCenter, qreal Scale);
+    void createRocket(Point3D RocketCenter, qreal Scale, int n);
 
     void deleteRocket();
 
