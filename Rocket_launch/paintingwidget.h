@@ -18,6 +18,7 @@
 #include "fire.h"
 #include "color.h"
 #include "zbuffer.h"
+#include <thread>
 
 #define WIDTH  850
 #define HEIGHT  715
@@ -33,7 +34,14 @@ struct BarycentricCoords
 };
 
 
-
+struct threadParams
+{
+    double xmax;
+    double xmin;
+    double ymax;
+    double ymin;
+    double square;
+};
 
 class PaintWidget : public QWidget
 {
@@ -58,12 +66,13 @@ public:
 
     void SetCameraAngleS(int angleX, int angleY, int angleZ);
     void fillObject(Point3D A, Point3D B, Point3D C);
+    void renderBuffer(Point3D A, Point3D B, Point3D C, threadParams params);
     void fillShadowBuffer(Point3D A, Point3D B, Point3D C);
     void drawShadow(Point3D P);
     void changeCameraPos(Point3D &cameraView);
     void changeVisCamera(double x, double y, double z);
     void clear();
-    void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square);
+    void ComputeBarycentric(Point3D A, Point3D B, Point3D C, Point3D P, double square, BarycentricCoords &BarCoor);
     void makeFire();
     bool isTriangleVisible(Point3D A, Point3D B, Point3D C, Point3D visiblePoint);
     QColor ambientLightning(Point3D A, Point3D B, Point3D C, QColor objColor, Point3D LightPoint);
@@ -74,7 +83,7 @@ public:
     std::vector<Triangle> trianglesOnImage;
     DepthBuffer ZBuffer;
     DepthBuffer ZBufferShadows;
-    BarycentricCoords BarCoor;
+    //BarycentricCoords BarCoor;
     QPainter *painter;
     fire RocketFire;
     Camera lightSource;
