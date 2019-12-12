@@ -156,6 +156,8 @@ void PaintWidget::drawCone(Cone &_cone)
 
 
             fillShadowBuffer(stmp1, stmp2, stmp3);
+            std::thread tr1(PaintWidget::fillShadowBuffer, this, stmp1, stmp2, stmp3);
+            tr1.join();
             //            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, lightSource.getPosition());
             //            if (triangleIsVisibleForLight == false)
             //            {
@@ -561,7 +563,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     xmin = getMinFor3(x1, x2, x3);
     ymax = getMaxFor3(y1, y2, y3);
     ymin = getMinFor3(y1, y2, y3);
-    Point3D P, ShadowPoint;
+    //Point3D P, ShadowPoint;
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
     A.setZ(1. / A.z());
     B.setZ(1. / B.z());
@@ -581,7 +583,7 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
 //    {
 //        params.xmin = xStart;
 //        params.xmax = xStart + xStep;
-//        thread = std::thread(&PaintWidget::renderBuffer, this, std::ref(A), std::ref(B), std::ref(C), params);
+//        thread = std::thread(&PaintWidget::renderBuffer, this, A, B, C, params);
 //        xStart += xStep;
 //    }
 //    for (auto &thread:threads)
@@ -705,7 +707,7 @@ void PaintWidget::drawShadow(Point3D P)
     //P.setX(P.x() * P.w());
     //P.setY(P.y() * P.w());
 
-    PerspectiveProjection(P, back);
+    //PerspectiveProjection(P, back);
     P.transform(matrixInvZ);
     P.transform(matrixInvY);
     P.transform(matrixInvX);

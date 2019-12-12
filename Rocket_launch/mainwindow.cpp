@@ -66,13 +66,20 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_D)
     {
-        CameraAngleY += 5;
+        if (CameraAngleY < 35)
+        {
+            CameraAngleY += 5;
+        }
+
         CameraVisAngleX = 5;
         //cameraPosition.setX(cameraPosition.x() + 5);
     }
     else if (event->key() == Qt::Key_A)
     {
-        CameraAngleY -= 5;
+        if (CameraAngleY > -35)
+        {
+            CameraAngleY -= 5;
+        }
         CameraVisAngleY = -5;
         //cameraPosition.setX(cameraPosition.x() - 5);
     }
@@ -231,7 +238,7 @@ void MainWindow::on_Draw_clicked()
     scene->clear();
     edgesCountOfRocket = ui->spinBox->value();
     edgesCountOfLP = ui->spinBox_2->value();
-    qDebug() << edgesCountOfRocket << edgesCountOfLP;
+    //qDebug() << edgesCountOfRocket << edgesCountOfLP;
     // Создадим ракету передав в нее центр основания ракеты и ее масштаб
     Point3D rocketCenter(0, 0, 0);
     _rocket.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
@@ -281,7 +288,7 @@ void MainWindow::MoveRocket()
     //qDebug() << "moving ...";
     //thread tr(_rocket.moveRocket());
     _rocket.moveRocket();
-    _rocket2.moveRocket();
+    //_rocket2.moveRocket();
     //    std::thread tr1(&rocket::moveRocket, std::ref(_rocket));
     //    std::thread tr2(&MainWindow::render, this);
     //    std::thread tr3(&PaintWidget::makeFire, std::ref(scene));
