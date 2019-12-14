@@ -181,6 +181,7 @@ void MainWindow::render()
     {
         scene->fillShadow = false;
     }
+    auto start = std::chrono::system_clock::now();
     Point3D point(0, 0, -25); // launchpad center
     scene->_camera.setPosition(cameraPosition);
     //sqDebug() << scene->_visibleCamera.x() << scene->_visibleCamera.y() << scene->_visibleCamera.z() << "dots";
@@ -196,9 +197,13 @@ void MainWindow::render()
 
 
     scene->drawRocket(_rocket);
-    //scene->drawRocket(_rocket2);
-    scene->drawLaunchPad(point, edgesCountOfLP);
-
+//    scene->drawRocket(_rocket2);
+    if (sceneCreated == true)
+        scene->drawLaunchPad(point, edgesCountOfLP);
+    auto end = std::chrono::system_clock::now();
+    const auto res = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()) / 1.0e8;
+    time += res;
+    //qDebug() << time << "res time";
 
 
     //scene->fillShadow = false;
@@ -235,51 +240,70 @@ void MainWindow::render()
 
 void MainWindow::on_Draw_clicked()
 {
-    scene->clear();
-    edgesCountOfRocket = ui->spinBox->value();
-    edgesCountOfLP = ui->spinBox_2->value();
-    //qDebug() << edgesCountOfRocket << edgesCountOfLP;
-    // Создадим ракету передав в нее центр основания ракеты и ее масштаб
-    Point3D rocketCenter(0, 0, 0);
-    _rocket.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
-    rocketCenter.changeAll(-100, 0, 0);
-    _rocket2.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
-    Point3D coneCenter(150, 150, 50);
-    //Отдельный цилиндр рядом с ракетой
-    QColor treeColor;
-    treeColor.setRed(139);
-    treeColor.setGreen(69);
-    treeColor.setBlue(19);
-    cone.createCone(coneCenter, 30, 30, 100, 10, treeColor);
-    coneCenter.changeAll(-150, 150, 150);
-    cone1.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::darkGreen));
+    if (sceneCreated == false)
+    {
+        sceneCreated = true;
+        scene->clear();
+        edgesCountOfRocket = ui->spinBox->value();
+        edgesCountOfLP = ui->spinBox_2->value();
+        //qDebug() << edgesCountOfRocket << edgesCountOfLP;
+        // Создадим ракету передав в нее центр основания ракеты и ее масштаб
+        Point3D rocketCenter(0, 0, 0);
+        _rocket.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
+        rocketCenter.changeAll(-100, 0, 0);
+        _rocket2.createRocket(rocketCenter, SCALE, edgesCountOfRocket);
+        Point3D coneCenter(150, 150, 50);
+        //Отдельный цилиндр рядом с ракетой
+        QColor treeColor;
+        treeColor.setRed(139);
+        treeColor.setGreen(69);
+        treeColor.setBlue(19);
+        cone.createCone(coneCenter, 30, 30, 100, 10, treeColor);
+        coneCenter.changeAll(-150, 150, 150);
+        cone1.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::darkGreen));
 
-    coneCenter.changeAll(0, 1000, 800);
-    LightCone.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::white));
+        coneCenter.changeAll(0, 1000, 800);
+        LightCone.createCone(coneCenter, 50, 50, 70, 10, QColor(Qt::white));
 
-    cameraPosition.setX(0);
-    cameraPosition.setY(0);
-    cameraPosition.setZ(1000);
-    cameraVisPosition.changeAll(0, 0, 1000);
-    render();
+        cameraPosition.setX(0);
+        cameraPosition.setY(0);
+        cameraPosition.setZ(1000);
+        cameraVisPosition.changeAll(0, 0, 1000);
+        render();
+    }
+    else
+    {
+        QString str = "Сцена уже создана!";
+        int res = makeMessageToUser(str);
+    }
+
 }
 
 void MainWindow::on_rotate_clicked()
 {
 
-    bool ok1 = true, ok2;
+    bool ok1 = true, ok2 = true;
 
     QString x = ui->editX->text();
     int angleX = x.toDouble(&ok1);
     QString y = ui->editY->text();
     int angleY = y.toDouble(&ok2);
-    if (ok1 && ok2)
+    if (!ok1 && !ok2)
+    {
+        QString str = "Параметры поворотов заданы неверно";
+        int res = makeMessageToUser(str);
+    }
+    if (ok1)
     {
         _rocket.rotateX(angleX);
-        _rocket.rotateY(angleY);
-
         render();
     }
+    if (ok2)
+    {
+        _rocket.rotateY(angleY);
+        render();
+    }
+
 
 }
 
@@ -395,6 +419,66 @@ void MainWindow::on_LightButton_clicked()
     }
     else
     {
-        qDebug() << "light input is not right";
+        QString str = "Не все позиции источника света заданы";
+        int res = makeMessageToUser(str);
     }
+}
+
+void MainWindow::on_moveButton_clicked()
+{
+    bool ok1 = true, ok2 = true, ok3 = true;
+    QString x = ui->editX_2->text();
+    int X = x.toDouble(&ok1);
+    QString y = ui->editY_2->text();
+    int Y = y.toDouble(&ok2);
+    QString z = ui->editZ_2->text();
+    int Z = z.toDouble(&ok3);
+//    qDebug() << X << Y << Z << "xyz";
+    if (!ok1 && !ok2 && !ok3)
+    {
+        QString str = "Параметры поворотов заданы неверно";
+        int res = makeMessageToUser(str);
+    }
+    if (ok1)
+    {
+//        qDebug() << "ok2";
+        _rocket.moveX(X);
+        render();
+    }
+    if (ok2)
+    {
+//        qDebug() << "ok2";
+        _rocket.moveY(Y);
+        render();
+    }
+    if (ok3)
+    {
+//        qDebug() << "ok2";
+        _rocket.moveZ(Z);
+        render();
+    }
+
+}
+
+int MainWindow::makeMessageToUser(QString str)
+{
+    QMessageBox msgBox;
+    msgBox.setText("Внимание!");
+    msgBox.setInformativeText(str);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int res = msgBox.exec();
+    if (res == QMessageBox::Ok) //нажата кнопка Ok
+        return 0;
+    else //отмена
+        return -1;
+}
+
+void MainWindow::on_ClearButton_clicked()
+{
+    _rocket.deleteRocket();
+    scene->clear();
+    sceneCreated = false;
+    render();
 }

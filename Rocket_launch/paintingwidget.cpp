@@ -156,8 +156,8 @@ void PaintWidget::drawCone(Cone &_cone)
 
 
             fillShadowBuffer(stmp1, stmp2, stmp3);
-            std::thread tr1(PaintWidget::fillShadowBuffer, this, stmp1, stmp2, stmp3);
-            tr1.join();
+//            std::thread tr1(PaintWidget::fillShadowBuffer, this, stmp1, stmp2, stmp3);
+//            tr1.join();
             //            triangleIsVisibleForLight = isTriangleVisible(stmp1, stmp2, stmp3, lightSource.getPosition());
             //            if (triangleIsVisibleForLight == false)
             //            {
@@ -185,8 +185,9 @@ void PaintWidget::drawCone(Cone &_cone)
         {
             resultColor = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
             //qDebug() << ambient << "ambient";
+//            resultColor = QColor(Qt::white);
             painter->setPen(resultColor);
-            //drawTriangleEdge(tmp1, tmp2, tmp3);
+//            drawTriangleEdge(tmp1, tmp2, tmp3);
             fillObject(tmp1, tmp2, tmp3);
         }
         else
@@ -543,8 +544,6 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     change(A);
     change(B);
     change(C);
-
-
     Vector aNormal = vertexNormals[A.pointIndex];
     Vector bNormal = vertexNormals[B.pointIndex];
     Vector cNormal = vertexNormals[C.pointIndex];
@@ -574,15 +573,15 @@ void PaintWidget::fillObject(Point3D A, Point3D B, Point3D C)
     params.square = square;
     std::vector<std::thread> threads(8);
     double xStart = xmin;
-    double xStep = (xmax - xmin) / 8;
+    double xStep = (xmax - xmin) / 8.0;
     //qDebug() << xStart << xStep;
     params.xmin = xStart;
     params.xmax = xmax;
     renderBuffer(A, B, C, params);
 //    for (auto &thread : threads)
 //    {
-//        params.xmin = xStart;
-//        params.xmax = xStart + xStep;
+//        params.xmin = round(xStart);
+//        params.xmax = round(xStart + xStep);
 //        thread = std::thread(&PaintWidget::renderBuffer, this, A, B, C, params);
 //        xStart += xStep;
 //    }
@@ -597,14 +596,13 @@ void PaintWidget::renderBuffer(Point3D A, Point3D B, Point3D C, threadParams par
     double z;
     Point3D P, ShadowPoint;
     BarycentricCoords BarCoor;
-    for (int y = int(params.ymin); y <= int(params.ymax); y++)
+    for (int y = params.ymin; y <= params.ymax; y++)
     {
-        for (int x = int(params.xmin); x <= int(params.xmax); x++)
+        for (int x = params.xmin; x <= params.xmax; x++)
         {
             P.changeAll(x, y, 0);
             ComputeBarycentric(A, B, C, P, params.square, BarCoor);
-            if (BarCoor.b1 >= 0 && BarCoor.b2 >= 0 &&
-                    BarCoor.b3 >= 0)
+            if (BarCoor.b1 >= 0 && BarCoor.b2 >= 0 && BarCoor.b3 >= 0)
             {
                 z = 1 / (BarCoor.b1 * A.z() + BarCoor.b2 * B.z() + BarCoor.b3 * C.z());
                 if (x + y * WIDTH >= 0 && x + y * WIDTH < WIDTH * HEIGHT)
@@ -616,13 +614,10 @@ void PaintWidget::renderBuffer(Point3D A, Point3D B, Point3D C, threadParams par
                         if (fillShadow == true)
                         {
                             ShadowPoint.changeAll(x - X_SIZE, y - Y_SIZE, z - 10000);
-                            //qDebug() << (A.w() + B.w() + C.w()) / 3 << "w";
-
-                            ShadowPoint.setW((A.w() + B.w() + C.w()) / 3);
                             drawShadow(ShadowPoint);
                         }
                         painter->drawPoint(x, y);
-
+                        //image->setPixelColor(x, y, resultColor);
                     }
                 }
                 else

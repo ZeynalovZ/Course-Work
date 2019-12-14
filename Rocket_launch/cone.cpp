@@ -435,7 +435,7 @@ void Cone::Rotatez(int angle_z, qreal _y, qreal _x)
     ;
 }
 
-void Cone::MoveCone()
+void Cone::MoveCone(int x, int y, int z)
 {
 //    for (int i = 0; i < this->firstCircle.size(); i++)
 //    {
@@ -447,12 +447,13 @@ void Cone::MoveCone()
 //        this->secondCircle[i].move(0, 0, 1);
 
 //    }
+    //qDebug() << x << y << z << "XYZ";
     for (auto &triangle : Triangles)
     {
 
-        triangle.A.move(0, 0, 1);
-        triangle.B.move(0, 0, 1);
-        triangle.C.move(0, 0, 1);
+        triangle.A.move(x, y, z);
+        triangle.B.move(x, y, z);
+        triangle.C.move(x, y, z);
 
     }
 }

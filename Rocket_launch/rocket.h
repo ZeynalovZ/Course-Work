@@ -30,6 +30,10 @@ public:
 
     void moveRocket();
 
+    void moveX(int x);
+    void moveY(int y);
+    void moveZ(int z);
+
     void setVertexes();
 
     bool is_visible();

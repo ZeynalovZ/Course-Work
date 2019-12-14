@@ -19,6 +19,7 @@
 #include "color.h"
 #include "zbuffer.h"
 #include <thread>
+#include <chrono>
 
 #define WIDTH  850
 #define HEIGHT  715
@@ -101,6 +102,7 @@ public:
 
     bool fillShadow = true;
     QColor lightColor;
+    double res_time = 0;
 
     // matrixes
     std::shared_ptr<Matrix> matrixInvX;

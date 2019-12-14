@@ -51,7 +51,7 @@ public:
     QLineEdit *editX_2;
     QLabel *label_5;
     QLineEdit *editY_2;
-    QPushButton *rotate_2;
+    QPushButton *moveButton;
     QLineEdit *editZ_2;
     QLabel *label_6;
     QFrame *line;
@@ -270,10 +270,10 @@ public:
         editY_2 = new QLineEdit(groupBox_2);
         editY_2->setObjectName(QString::fromUtf8("editY_2"));
         editY_2->setGeometry(QRect(30, 190, 171, 22));
-        rotate_2 = new QPushButton(groupBox_2);
-        rotate_2->setObjectName(QString::fromUtf8("rotate_2"));
-        rotate_2->setGeometry(QRect(10, 250, 191, 41));
-        rotate_2->setFont(font);
+        moveButton = new QPushButton(groupBox_2);
+        moveButton->setObjectName(QString::fromUtf8("moveButton"));
+        moveButton->setGeometry(QRect(10, 250, 191, 41));
+        moveButton->setFont(font);
         editZ_2 = new QLineEdit(groupBox_2);
         editZ_2->setObjectName(QString::fromUtf8("editZ_2"));
         editZ_2->setGeometry(QRect(30, 220, 171, 22));
@@ -427,7 +427,7 @@ public:
         rotate->setText(QCoreApplication::translate("MainWindow", "\320\237\320\276\320\262\320\265\321\200\320\275\321\203\321\202\321\214", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "Y", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "X", nullptr));
-        rotate_2->setText(QCoreApplication::translate("MainWindow", "\320\237\320\265\321\200\320\265\320\274\320\265\321\201\321\202\320\270\321\202\321\214", nullptr));
+        moveButton->setText(QCoreApplication::translate("MainWindow", "\320\237\320\265\321\200\320\265\320\274\320\265\321\201\321\202\320\270\321\202\321\214", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "Z", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\320\264\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\202\320\265\320\275\320\270", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\263\321\200\320\260\320\275\320\265\320\271 \321\200\320\260\320\272\320\265\321\202\321\213", nullptr));

@@ -17,7 +17,7 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale, int n)
     int EdgesCircleCount = n;
     this->scale = Scale;
     this->rocketCenter = RocketCenter;
-    Cone cone0, cone1, cone2, cone3, cone4, cone5;
+    Cone cone0, cone1, cone2, cone3, cone4, cone5, coneFire;
     int x = rocketCenter.x();
     int y = rocketCenter.y();
     int z = rocketCenter.z();
@@ -80,6 +80,16 @@ void rocket::createRocket(Point3D RocketCenter, qreal Scale, int n)
     this->addModule(cone5);
     z += height;
 
+    // конус огня
+//    radius1 = 40 * scale;
+//    radius2 = 50 * scale;
+//    height = 100 * scale;
+//    center.setX(x);
+//    center.setY(y);
+//    center.setZ(-height / 2);
+//    coneFire.createCone(center, radius1, radius2, height, EdgesCircleCount, QColor(Qt::red));
+//    this->addModule(coneFire);
+
 }
 
 void rocket::deleteRocket()
@@ -103,7 +113,31 @@ void rocket::moveRocket()
 {
     for (auto &module : modules)
     {
-        module.MoveCone();
+        module.MoveCone(0, 0, 1);
+    }
+}
+
+void rocket::moveX(int x)
+{
+    for (auto &module : modules)
+    {
+        module.MoveCone(x, 0, 0);
+    }
+}
+
+void rocket::moveY(int y)
+{
+    for (auto &module : modules)
+    {
+        module.MoveCone(0, y, 0);
+    }
+}
+
+void rocket::moveZ(int z)
+{
+    for (auto &module : modules)
+    {
+        module.MoveCone(0, 0, z);
     }
 }
 

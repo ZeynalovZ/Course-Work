@@ -854,7 +854,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="rotate_2">
+    <widget class="QPushButton" name="moveButton">
      <property name="geometry">
       <rect>
        <x>10</x>

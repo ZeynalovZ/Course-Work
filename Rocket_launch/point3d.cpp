@@ -120,6 +120,7 @@ void Point3D::move(int x, int y, int z)
     multiplicateMatrix(matrixsrc, matrix, 1, 4, 4, 4, tmp);
     //qDebug() << tmp.x() << tmp.y() << tmp.z() << "tmp";
     this->setX(tmp.x());
+    this->setY(tmp.y());
     this->setZ(tmp.z());
 }
 

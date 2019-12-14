@@ -26,7 +26,7 @@ public:
     void Rotatex(int angle_x);
     void Rotatey(int angle_y, qreal _y, qreal _z);
     void Rotatez(int angle_z, qreal _y, qreal _x);
-    void MoveCone();
+    void MoveCone(int x, int y, int z);
 public:
     Point3D ConeCenter;
     qreal radius1;

@@ -13,6 +13,7 @@
 #include "paintingwidget.h"
 #include <thread>
 #include <QColorDialog>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -52,6 +53,12 @@ private slots:
 
     void on_LightButton_clicked();
 
+    void on_moveButton_clicked();
+
+    int makeMessageToUser(QString str);
+
+    void on_ClearButton_clicked();
+
 public:
     int CameraAngleX = 0;
     int CameraAngleY = 0;
@@ -61,6 +68,8 @@ public:
 
     int edgesCountOfRocket = 3;
     int edgesCountOfLP = 3;
+    double time = 0;
+    bool sceneCreated = false;
 private:
     Ui::MainWindow *ui;
     rocket _rocket;
