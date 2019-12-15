@@ -81,26 +81,26 @@ void PaintWidget::drawCone(Cone &_cone)
     //findLightAngles(tmpLight);
     //rotateLight(tmpLight);
     //вычисление усредненных нормелей
-    vertexNormals.clear();
-    for (int i = 0; i < _cone.vertexShader.size(); i++)
-    {
-        vertexNormals.push_back(Vector());
-    }
+//    vertexNormals.clear();
+//    for (int i = 0; i < _cone.vertexShader.size(); i++)
+//    {
+//        vertexNormals.push_back(Vector());
+//    }
 
 
-    for (auto &triangle : _cone.Triangles)
-    {
-        //qDebug() << triangle.A.triangleIndexes.size() << "size";
-        tmp1 = triangle.A;
-        tmp2 = triangle.B;
-        tmp3 = triangle.C;
-        computeVertexNormals(tmp1, tmp2, tmp3);
-    }
-    for (int i = 0; i < vertexNormals.size(); i++)
-    {
-        vertexNormals[i].normalize();
-        //qDebug() << vertexNormals[i].x << vertexNormals[i].y << vertexNormals[i].z << "vertex normals";
-    }
+//    for (auto &triangle : _cone.Triangles)
+//    {
+//        //qDebug() << triangle.A.triangleIndexes.size() << "size";
+//        tmp1 = triangle.A;
+//        tmp2 = triangle.B;
+//        tmp3 = triangle.C;
+//        computeVertexNormals(tmp1, tmp2, tmp3);
+//    }
+//    for (int i = 0; i < vertexNormals.size(); i++)
+//    {
+//        vertexNormals[i].normalize();
+//        //qDebug() << vertexNormals[i].x << vertexNormals[i].y << vertexNormals[i].z << "vertex normals";
+//    }
 
     for (auto &triangle : _cone.Triangles)
     {
@@ -169,31 +169,35 @@ void PaintWidget::drawCone(Cone &_cone)
         //        painter->setPen(QColor(Qt::red));
         //        drawTriangleEdge(stmp1, stmp2, stmp3);
 
-        PerspectiveProjection(tmp1, forward);
-        PerspectiveProjection(tmp2, forward);
-        PerspectiveProjection(tmp3, forward);
-        //qDebug() << tmp1.w() << tmp2.w() << tmp3.w() << "temp";
-
-        tmp1.pointIndex = pointIndex1;
-        tmp2.pointIndex = pointIndex2;
-        tmp3.pointIndex = pointIndex3;
-
-        // Перед растеризацией, сделаем проверку на лицевые грани
-        triangleIsVisible = isTriangleVisible(tmp1, tmp2, tmp3, _camera.getPosition());
-        //bool triangleIsVisible = true;
-        if (triangleIsVisible == true)
+        if (tmp1.z() <= 1000 && tmp2.z() <= 1000 && tmp3.z() <= 1000)
         {
-            resultColor = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
-            //qDebug() << ambient << "ambient";
-//            resultColor = QColor(Qt::white);
-            painter->setPen(resultColor);
-//            drawTriangleEdge(tmp1, tmp2, tmp3);
-            fillObject(tmp1, tmp2, tmp3);
+            PerspectiveProjection(tmp1, forward);
+            PerspectiveProjection(tmp2, forward);
+            PerspectiveProjection(tmp3, forward);
+            //qDebug() << tmp1.w() << tmp2.w() << tmp3.w() << "temp";
+
+            tmp1.pointIndex = pointIndex1;
+            tmp2.pointIndex = pointIndex2;
+            tmp3.pointIndex = pointIndex3;
+
+            // Перед растеризацией, сделаем проверку на лицевые грани
+            triangleIsVisible = isTriangleVisible(tmp1, tmp2, tmp3, _camera.getPosition());
+            //bool triangleIsVisible = true;
+            if (triangleIsVisible == true)
+            {
+                resultColor = ambientLightning(tmp1, tmp2, tmp3, _cone.ObjectColor, tmpLight);
+                //qDebug() << ambient << "ambient";
+    //            resultColor = QColor(Qt::white);
+                painter->setPen(resultColor);
+    //            drawTriangleEdge(tmp1, tmp2, tmp3);
+                fillObject(tmp1, tmp2, tmp3);
+            }
+            else
+            {
+                // do nothing
+            }
         }
-        else
-        {
-            // do nothing
-        }
+
     }
 
     update();
@@ -379,10 +383,10 @@ void PaintWidget::findLightAngles(Point3D &P)
     {
         angleX = -angleX;
     }
-    qDebug() << angleX << angleY << angleZ << "angles";
+    qDebug() << angleX << angleY << angleZ - 90 << "angles";
     lightSource.setXAngle(angleX);
     lightSource.setYAngle(-angleY);
-    lightSource.setZAngle(angleZ);
+    lightSource.setZAngle(angleZ - 90);
     matrixLightX.reset(new RotateOxMatrix(lightSource.getXAngle() * M_PI / TO_RAD_180));
     matrixLightY.reset(new RotateOyMatrix(lightSource.getYAngle() * M_PI / TO_RAD_180));
     matrixLightZ.reset(new RotateOzMatrix(lightSource.getZAngle() * M_PI / TO_RAD_180));
@@ -440,10 +444,10 @@ void PaintWidget::SetCameraAngleS(int angleX, int angleY, int angleZ)
     //qDebug() << lightSource.getXAngle() << lightSource.getYAngle() << lightSource.getZAngle() << "light";
 
 
-    Point3D tmpLight = lightSource.getPosition();
-    //lightSource.setYAngle(angleY);
-    //qDebug() << tmpLight.x() << tmpLight.y() << "before";
-    rotateCamera(tmpLight);
+//    Point3D tmpLight = lightSource.getPosition();
+//    //lightSource.setYAngle(angleY);
+//    //qDebug() << tmpLight.x() << tmpLight.y() << "before";
+//    rotateCamera(tmpLight);
     //qDebug() << tmpLight.x() << tmpLight.y() << "after";
     //findLightAngles(tmpLight);
 
@@ -703,9 +707,20 @@ void PaintWidget::drawShadow(Point3D P)
     //P.setY(P.y() * P.w());
 
     //PerspectiveProjection(P, back);
-    P.transform(matrixInvZ);
-    P.transform(matrixInvY);
-    P.transform(matrixInvX);
+    if (_camera.getZAngle() != 0)
+    {
+        P.transform(matrixInvZ);
+    }
+
+    if (_camera.getYAngle() != 0)
+    {
+        P.transform(matrixInvY);
+    }
+
+    if (_camera.getXAngle() != 0)
+    {
+       P.transform(matrixInvX);
+    }
 
     rotateLight(P);
     //PerspectiveProjection(P, forward);
