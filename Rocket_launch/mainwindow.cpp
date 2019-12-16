@@ -207,7 +207,7 @@ void MainWindow::render()
 
 
     //scene->fillShadow = false;
-    //scene->drawRocket(_rocket2);
+//    scene->drawRocket(_rocket2);
 
     //scene->drawCone(LightCone);
 
@@ -342,22 +342,24 @@ void MainWindow::updateFire()
     //        timerForFire->start(timer);
     //    }
 }
-/*
-// добавить камеру,
-матрицы поворотов и вращений и переносов,
-добавить сцену и добавлять объекты в сцену,
-рисовать на QImage и потом переносить на QGraphicsView
 
-*/
 
 
 
 void MainWindow::on_GoButton_clicked()
 {
 
-    timerForRocket->start(timer);
+    if (CameraAngleY == 0)
+    {
+        timerForRocket->start(timer);
+        timerForFire->start(timer);
+    }
 
-    timerForFire->start(timer);
+    else
+    {
+        makeMessageToUser(QString("Установите угол по Y равным нулю"));
+    }
+
     //render();
 }
 
